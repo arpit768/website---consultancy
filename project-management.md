@@ -3,76 +3,66 @@
 ## Project Overview
 
 **Project Name:** Educar International
-**Type:** Educational Consultancy Landing Page / AI Studio Applet
-**Stack:** Next.js 15, React 19, TypeScript, Tailwind CSS 4, Framer Motion
-**Deployment:** Google AI Studio (standalone/containerized)
-**Current Version:** 0.1.0
+**Type:** Educational Consultancy Website (Pure Frontend)
+**Stack:** Next.js 15, React 19, TypeScript, Tailwind CSS 4, Motion (Framer Motion)
+**Current Version:** 0.2.0
 **Branch:** main
 
 ---
 
 ## Goals
 
-Build a modern, production-ready consultancy website for Educar International — a platform helping students navigate studying abroad. The site should:
+Build a modern, production-ready consultancy website for Educar International — a platform helping Nepalese students navigate studying abroad. The site should:
 
-- Present 8 destination universities with country-based filtering
-- Clearly explain 3 core services: University Admissions, Visa Assistance, Career Counseling
-- Build trust via testimonials from past students
-- Capture leads through a contact form
-- Optionally surface Gemini AI-powered features (API key already wired in)
+- Present study destinations (UK, USA, Canada, Australia, Japan) with university filtering
+- Clearly explain 6 core services with detailed breakdowns
+- Build trust via testimonials and ratings from past students
+- Capture leads via WhatsApp and email (no backend required)
+- Provide instant FAQ help via client-side AI counselor chatbot
 
 ---
 
-## Current State (as of 2026-03-30)
+## Current State (as of 2026-04-06)
 
 ### Done
-- [x] Project scaffolded (Next.js 15 + TypeScript + Tailwind CSS 4)
-- [x] Root layout with Google Fonts (Inter, Space Grotesk, JetBrains Mono)
-- [x] Full landing page (`app/page.tsx`) with all major sections
-- [x] Floating navigation bar with dark/light theme toggle
+- [x] Clean, minimal landing page with focused sections
+- [x] Multi-page structure: Home, Destinations, Services, Process, Reviews
+- [x] All backend removed — pure frontend, no API routes
+- [x] Client-side FAQ chatbot (Aari) with 15+ knowledge base entries
+- [x] Contact form sends via WhatsApp with mailto fallback
+- [x] Animated UI: TextReveal, SmoothReveal, TiltCard, MagneticButton
+- [x] Aurora gradient blobs, grain texture, glassmorphism
+- [x] Dark/light mode with system preference detection
+- [x] Responsive design (mobile, tablet, desktop)
+- [x] WhatsApp floating button
 - [x] Scroll progress indicator
-- [x] Active section tracking (Intersection Observer)
-- [x] Hero section with headline and scroll indicator
-- [x] Destinations section — 8 universities, country filter (UK, USA, Canada, Australia)
-- [x] Expertise section — 3 service cards
-- [x] Approach section — split layout with methodology image
-- [x] Testimonials section — 3 student stories
-- [x] Footer CTA with contact form (Name, Email, Message)
-- [x] Dark/Light mode with CSS custom properties
-- [x] Framer Motion animations throughout
-- [x] Mobile-responsive layout
-- [x] `use-mobile.ts` hook for breakpoint detection
-- [x] Google Gemini API dependency and `.env.example` configured
-- [x] Firebase tools installed (deployment ready)
-- [x] Git repository initialized, clean main branch
+- [x] SEO metadata with title templates
 
-### In Progress
-- [ ] Nothing currently in progress
+### Architecture
+- **Landing page:** Hero + Services snapshot + Destinations preview + Trust/testimonial + Process overview + Contact
+- **Destinations:** Country profiles with stats + university grid with filtering
+- **Services:** Accordion with detailed descriptions + "What's Included" checklists
+- **Process:** 4-step interactive guide + FAQ section
+- **Reviews:** Rating breakdown + testimonials with country filtering
 
 ---
 
 ## Backlog / Upcoming Work
 
 ### High Priority
-- [ ] Wire up contact form — add server action or API route to handle submissions (email/CRM)
-- [ ] Add real university logos and images (currently using placeholder/picsum)
-- [ ] Implement Gemini AI feature — e.g., university recommendation chatbot, eligibility checker
-- [ ] SEO: add Open Graph tags, Twitter cards, sitemap.xml, robots.txt
+- [ ] Add real university logos and images (currently using picsum placeholders)
+- [ ] SEO: Open Graph tags, Twitter cards, sitemap.xml, robots.txt
 - [ ] Analytics integration (Google Analytics or Plausible)
 
 ### Medium Priority
-- [ ] Add more destinations (expand beyond 8 universities)
 - [ ] Blog / Resources section (study abroad tips, visa guides)
-- [ ] Success stories / case studies page
-- [ ] Team / About page
-- [ ] FAQ section or accordion
+- [ ] Team / About page with CEO section
+- [ ] Add more destinations and universities
 - [ ] Testimonial carousel for mobile
 
-### Low Priority / Nice to Have
+### Low Priority
 - [ ] Multi-language support (i18n)
-- [ ] CMS integration (Contentful / Sanity) for content updates without code changes
-- [ ] Admin dashboard for lead management
-- [ ] Live chat / WhatsApp integration
+- [ ] CMS integration (Contentful / Sanity)
 
 ---
 
@@ -84,11 +74,9 @@ Build a modern, production-ready consultancy website for Educar International �
 | UI Library | React | ^19.2.1 |
 | Language | TypeScript | 5.9.3 |
 | Styling | Tailwind CSS | 4.1.11 |
-| Animation | Framer Motion (motion) | ^12.23.24 |
+| Animation | Motion (Framer Motion) | ^12.23.24 |
 | Icons | Lucide React | ^0.553.0 |
-| AI | Google Gemini (@google/genai) | ^1.17.0 |
-| Form Validation | @hookform/resolvers | ^5.2.1 |
-| Deployment | Firebase / Google AI Studio | — |
+| Forms | React Hook Form + Zod | ^7.56.4 / ^3.24.4 |
 
 ---
 
@@ -96,13 +84,13 @@ Build a modern, production-ready consultancy website for Educar International �
 
 | Token | Value | Usage |
 |---|---|---|
-| `--color-brand-purple` | `#7B2E83` | Primary accent, CTAs |
-| `--color-brand-yellow` | `#FFD36A` | Highlights, selection |
-| `--color-brand-dark` | `#2A0835` | Dark mode background |
-| `--color-brand-light` | `#FDFBFD` | Light mode background |
+| `--color-brand-purple` | `#7B2E83` | Primary accent, CTAs, headings |
+| `--color-brand-yellow` | `#FFD36A` | Highlights, secondary accent |
+| `--color-brand-dark` | `#1A0829` | Dark mode background |
+| `--color-brand-light` | `#FDFBFF` | Light mode background |
 | Font (sans) | Inter | Body text |
 | Font (display) | Space Grotesk | Headings |
-| Font (mono) | JetBrains Mono | Code/labels |
+| Font (mono) | JetBrains Mono | Labels, badges |
 
 ---
 
@@ -110,37 +98,42 @@ Build a modern, production-ready consultancy website for Educar International �
 
 ```
 app/
-  layout.tsx       — Root layout, fonts, metadata ("ProDev Consultancy" title — update to Educar International)
-  page.tsx         — Entire landing page (all sections in one file)
-  globals.css      — Tailwind + CSS custom properties / brand tokens
-lib/
-  utils.ts         — cn() classname helper (clsx + tailwind-merge)
+  layout.tsx              — Root layout, fonts, metadata, grain texture
+  page.tsx                — Clean landing page
+  globals.css             — Tailwind + brand tokens + unique CSS effects
+  components/
+    Navbar.tsx             — Fixed floating navbar with dark mode toggle
+    MobileNav.tsx          — Slide-out mobile navigation
+    Footer.tsx             — Multi-column footer
+    ContactForm.tsx        — WhatsApp/mailto contact form
+    AICounselor.tsx        — Client-side FAQ chatbot
+    WhatsAppButton.tsx     — Floating WhatsApp button
+    ScrollProgress.tsx     — Top scroll progress bar
+    Breadcrumb.tsx         — Page breadcrumb navigation
+    AnimatedCounter.tsx    — Animated number display
+    MagneticButton.tsx     — Magnetic hover effect wrapper
+    TiltCard.tsx           — 3D tilt-on-hover card wrapper
+    SmoothReveal.tsx       — Scroll-triggered reveal animation
+    TextReveal.tsx         — Word-by-word text reveal animation
+    CustomCursor.tsx       — Custom cursor (available, not active)
+  destinations/
+    layout.tsx + page.tsx  — Country profiles + university grid
+  services/
+    layout.tsx + page.tsx  — Service accordion with details
+  process/
+    layout.tsx + page.tsx  — 4-step process guide + FAQ
+  reviews/
+    layout.tsx + page.tsx  — Ratings + testimonials
 hooks/
-  use-mobile.ts    — useIsMobile() hook (breakpoint: 768px)
+  use-theme.ts             — Dark/light mode hook with localStorage
+  use-mobile.ts            — Mobile breakpoint detection
+lib/
+  data.ts                  — All content data (universities, services, etc.)
+  utils.ts                 — cn() classname helper
+public/
+  logo.png                 — Brand logo (purple + yellow)
+  logo.jpeg                — Alternative logo format
 ```
-
----
-
-## Known Issues / Tech Debt
-
-| Issue | Severity | Notes |
-|---|---|---|
-| Page title shows "ProDev Consultancy" | Low | `layout.tsx` metadata title needs updating to "Educar International" |
-| All sections in one file (`page.tsx`) | Medium | Should be split into components as the page grows |
-| Contact form has no backend handler | High | Form submits nowhere — needs API route or third-party form service |
-| Placeholder images from picsum.photos | Medium | Replace with real university/brand assets |
-| HMR disabled in webpack config | Info | Intentional for AI Studio compatibility — do not remove |
-
----
-
-## Environment Variables
-
-| Variable | Required | Description |
-|---|---|---|
-| `GEMINI_API_KEY` | Yes (for AI features) | Google Gemini API key |
-| `APP_URL` | Yes (for deployment) | Deployed app URL |
-
-Copy `.env.example` → `.env.local` and fill in values before running locally.
 
 ---
 
@@ -156,20 +149,13 @@ npm run clean    # Clean .next build cache
 
 ---
 
-## Deployment
-
-- Target platform: **Google AI Studio** (standalone Next.js build)
-- Firebase tools are installed — can deploy via `firebase deploy`
-- `next.config.ts` sets `output: 'standalone'` for containerization
-- Ensure `GEMINI_API_KEY` and `APP_URL` are set in the hosting environment
-
----
-
 ## Decisions Log
 
 | Date | Decision | Reason |
 |---|---|---|
-| 2026-03-30 | Single `page.tsx` for all sections | Quick MVP; refactor into components when sections stabilize |
-| 2026-03-30 | Tailwind CSS 4 (not v3) | Latest version; note: config is via `globals.css` `@theme`, not `tailwind.config.js` |
-| 2026-03-30 | Framer Motion via `motion` package | Unified motion library (v12 ships as `motion`, not `framer-motion`) |
-| 2026-03-30 | HMR disabled in webpack | Required for Google AI Studio iframe compatibility |
+| 2026-03-30 | Tailwind CSS 4 (not v3) | Latest version; config via `globals.css` `@theme` |
+| 2026-03-30 | Motion library (v12) | Unified motion library, ships as `motion` not `framer-motion` |
+| 2026-04-06 | Removed all backend (API routes, Gemini, Firebase) | Pure frontend approach — no server dependencies |
+| 2026-04-06 | Contact form via WhatsApp | No backend needed, direct communication channel |
+| 2026-04-06 | Client-side FAQ chatbot | Replaces Gemini AI — works offline, no API key needed |
+| 2026-04-06 | Clean landing page with content on sub-pages | Less clutter, each page has clear purpose |
