@@ -15,7 +15,7 @@ import MagneticButton from '@/app/components/MagneticButton';
 import TiltCard from '@/app/components/TiltCard';
 import SmoothReveal from '@/app/components/SmoothReveal';
 import TextReveal from '@/app/components/TextReveal';
-import { useTheme } from '@/hooks/use-theme';
+import { useThemeContext } from '@/app/components/ThemeProvider';
 import { TESTIMONIALS, MINI_TESTIMONIALS } from '@/lib/data';
 
 const COUNTRIES_FILTER = ['All', 'UK', 'USA', 'Canada', 'Australia', 'Japan'];
@@ -29,7 +29,7 @@ const RATING_ASPECTS = [
 ];
 
 export default function ReviewsPage() {
-  const { isDark, toggle } = useTheme();
+  const { isDark, toggle } = useThemeContext();
   const [selectedCountry, setSelectedCountry] = useState('All');
 
   const filteredTestimonials = selectedCountry === 'All' ? TESTIMONIALS : TESTIMONIALS.filter((t) => t.country === selectedCountry);

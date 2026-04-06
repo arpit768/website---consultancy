@@ -16,11 +16,11 @@ import MagneticButton from '@/app/components/MagneticButton';
 import TiltCard from '@/app/components/TiltCard';
 import SmoothReveal from '@/app/components/SmoothReveal';
 import TextReveal from '@/app/components/TextReveal';
-import { useTheme } from '@/hooks/use-theme';
+import { useThemeContext } from '@/app/components/ThemeProvider';
 import { COUNTRIES, UNIVERSITIES, COUNTRY_PROFILES } from '@/lib/data';
 
 export default function DestinationsPage() {
-  const { isDark, toggle } = useTheme();
+  const { isDark, toggle } = useThemeContext();
   const [selectedCountry, setSelectedCountry] = useState('All');
 
   const filtered = selectedCountry === 'All'

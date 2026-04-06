@@ -18,7 +18,7 @@ import MagneticButton from './components/MagneticButton';
 import SmoothReveal from './components/SmoothReveal';
 import TextReveal from './components/TextReveal';
 import TiltCard from './components/TiltCard';
-import { useTheme } from '@/hooks/use-theme';
+import { useThemeContext } from '@/app/components/ThemeProvider';
 import { COUNTRY_PROFILES, TESTIMONIALS } from '@/lib/data';
 
 const SERVICES_PREVIEW = [
@@ -37,7 +37,7 @@ const TRUST_POINTS = [
 ];
 
 export default function Home() {
-  const { isDark: isDarkMode, toggle: toggleDark } = useTheme();
+  const { isDark: isDarkMode, toggle: toggleDark } = useThemeContext();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 

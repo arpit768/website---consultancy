@@ -13,11 +13,11 @@ import WhatsAppButton from '@/app/components/WhatsAppButton';
 import MagneticButton from '@/app/components/MagneticButton';
 import SmoothReveal from '@/app/components/SmoothReveal';
 import TextReveal from '@/app/components/TextReveal';
-import { useTheme } from '@/hooks/use-theme';
+import { useThemeContext } from '@/app/components/ThemeProvider';
 import { SERVICES } from '@/lib/data';
 
 export default function ServicesPage() {
-  const { isDark, toggle } = useTheme();
+  const { isDark, toggle } = useThemeContext();
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
 
   return (

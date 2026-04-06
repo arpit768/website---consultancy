@@ -13,7 +13,7 @@ import WhatsAppButton from '@/app/components/WhatsAppButton';
 import MagneticButton from '@/app/components/MagneticButton';
 import SmoothReveal from '@/app/components/SmoothReveal';
 import TextReveal from '@/app/components/TextReveal';
-import { useTheme } from '@/hooks/use-theme';
+import { useThemeContext } from '@/app/components/ThemeProvider';
 import { PROCESS_STEPS } from '@/lib/data';
 
 const FAQ = [
@@ -26,7 +26,7 @@ const FAQ = [
 ];
 
 export default function ProcessPage() {
-  const { isDark, toggle } = useTheme();
+  const { isDark, toggle } = useThemeContext();
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [activeStep, setActiveStep] = useState(0);
 
