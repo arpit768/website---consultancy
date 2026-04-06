@@ -4,8 +4,8 @@
 @theme {
   --color-brand-purple: #7B2E83;
   --color-brand-yellow: #FFD36A;
-  --color-brand-dark: #2A0835;
-  --color-brand-light: #FDFBFD;
+  --color-brand-dark: #1A0829;
+  --color-brand-light: #FDFBFF;
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
@@ -14,4 +14,278 @@
 body {
   background-color: var(--color-brand-light);
   color: var(--color-brand-dark);
+}
+
+/* ── Marquee ─────────────────────────────────────────────────────────── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-33.3333%); }
+}
+
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+
+/* ── Grain texture overlay ───────────────────────────────────────────── */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+  mix-blend-mode: overlay;
+}
+
+.dark .grain::after {
+  opacity: 0.06;
+}
+
+/* ── Aurora / gradient blob animations ───────────────────────────────── */
+@keyframes aurora-float {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  25% { transform: translate(80px, -60px) scale(1.1) rotate(90deg); }
+  50% { transform: translate(-40px, 40px) scale(0.95) rotate(180deg); }
+  75% { transform: translate(60px, 80px) scale(1.05) rotate(270deg); }
+}
+
+@keyframes aurora-float-reverse {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  25% { transform: translate(-60px, 80px) scale(1.08) rotate(-90deg); }
+  50% { transform: translate(50px, -50px) scale(0.9) rotate(-180deg); }
+  75% { transform: translate(-80px, -30px) scale(1.12) rotate(-270deg); }
+}
+
+@keyframes aurora-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.15); }
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  pointer-events: none;
+  will-change: transform;
+}
+
+.aurora-blob-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(123, 46, 131, 0.25), transparent 70%);
+  animation: aurora-float 20s ease-in-out infinite;
+}
+
+.aurora-blob-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 211, 106, 0.2), transparent 70%);
+  animation: aurora-float-reverse 25s ease-in-out infinite;
+}
+
+.aurora-blob-3 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(123, 46, 131, 0.15), transparent 70%);
+  animation: aurora-pulse 15s ease-in-out infinite;
+}
+
+.dark .aurora-blob-1 {
+  background: radial-gradient(circle, rgba(123, 46, 131, 0.35), transparent 70%);
+}
+
+.dark .aurora-blob-2 {
+  background: radial-gradient(circle, rgba(255, 211, 106, 0.15), transparent 70%);
+}
+
+.dark .aurora-blob-3 {
+  background: radial-gradient(circle, rgba(255, 211, 106, 0.1), transparent 70%);
+}
+
+/* ── Glassmorphism ───────────────────────────────────────────────────── */
+.glass {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dark .glass {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(123, 46, 131, 0.08);
+}
+
+.dark .glass-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 211, 106, 0.08);
+}
+
+/* ── Animated gradient border ────────────────────────────────────────── */
+@keyframes gradient-rotate {
+  0% { --angle: 0deg; }
+  100% { --angle: 360deg; }
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.gradient-border {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--angle), transparent 25%, var(--color-brand-purple) 50%, var(--color-brand-yellow) 75%, transparent 100%);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: xor;
+  animation: gradient-rotate 4s linear infinite;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.gradient-border:hover::before {
+  opacity: 1;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────────────── */
+.scroll-smooth::-webkit-scrollbar { width: 4px; }
+.scroll-smooth::-webkit-scrollbar-track { background: transparent; }
+.scroll-smooth::-webkit-scrollbar-thumb { background: rgba(123,46,131,0.2); border-radius: 2px; }
+
+/* ── Focus ─────────────────────────────────────────────────────────────── */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+}
+
+/* ── Smooth scroll ─────────────────────────────────────────────────────── */
+* {
+  scroll-behavior: smooth;
+}
+
+/* ── Select ────────────────────────────────────────────────────────────── */
+select {
+  appearance: auto;
+}
+
+/* ── Ping ─────────────────────────────────────────────────────────────── */
+@keyframes ping-slow {
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+.animate-ping { animation: ping-slow 1.5s cubic-bezier(0,0,0.2,1) infinite; }
+
+/* ── Marquee fade edges ──────────────────────────────────────────────── */
+.marquee-fade {
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+/* ── Glow effects ────────────────────────────────────────────────────── */
+.glow-purple {
+  box-shadow: 0 0 40px rgba(123, 46, 131, 0.15), 0 0 80px rgba(123, 46, 131, 0.05);
+}
+
+.dark .glow-purple {
+  box-shadow: 0 0 40px rgba(123, 46, 131, 0.25), 0 0 80px rgba(123, 46, 131, 0.1);
+}
+
+.glow-yellow {
+  box-shadow: 0 0 40px rgba(255, 211, 106, 0.1), 0 0 80px rgba(255, 211, 106, 0.03);
+}
+
+.dark .glow-yellow {
+  box-shadow: 0 0 40px rgba(255, 211, 106, 0.15), 0 0 80px rgba(255, 211, 106, 0.05);
+}
+
+/* ── Morphing shape decoration ───────────────────────────────────────── */
+@keyframes morph {
+  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+  50% { border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%; }
+  75% { border-radius: 60% 40% 60% 30% / 70% 30% 50% 60%; }
+}
+
+.morph-shape {
+  animation: morph 12s ease-in-out infinite;
+  will-change: border-radius;
+}
+
+/* ── Text gradient ───────────────────────────────────────────────────── */
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-brand-purple), var(--color-brand-yellow));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dark .text-gradient {
+  background: linear-gradient(135deg, var(--color-brand-yellow), #fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Staggered line reveal (for hero text) ───────────────────────────── */
+@keyframes line-reveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+.line-reveal {
+  animation: line-reveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Horizontal scroll section ───────────────────────────────────────── */
+.horizontal-scroll {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.horizontal-scroll > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* ── Floating animation ──────────────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float 6s ease-in-out 2s infinite;
+}
+
+.animate-float-slow {
+  animation: float 8s ease-in-out 1s infinite;
 }

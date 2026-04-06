@@ -1,363 +1,486 @@
 'use client';
 
-import { motion, useScroll, useSpring } from 'motion/react';
-import { ArrowUpRight, Globe, GraduationCap, FileCheck, Compass, Moon, Sun, MapPin } from 'lucide-react';
+import { motion, useScroll, useSpring, AnimatePresence } from 'motion/react';
+import {
+  ArrowUpRight, Globe, GraduationCap,
+  MapPin, Star, Users, CheckCircle, Award,
+  ArrowRight, Phone, Mail, ChevronRight,
+} from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
-
-const countries = ['All', 'UK', 'USA', 'Canada', 'Australia'];
-const universities = [
-  { name: 'University of Oxford', country: 'UK', image: 'https://picsum.photos/seed/oxford/600/400', rank: '#1 in UK' },
-  { name: 'Imperial College London', country: 'UK', image: 'https://picsum.photos/seed/imperial/600/400', rank: '#3 in UK' },
-  { name: 'Harvard University', country: 'USA', image: 'https://picsum.photos/seed/harvard/600/400', rank: '#1 in USA' },
-  { name: 'Stanford University', country: 'USA', image: 'https://picsum.photos/seed/stanford/600/400', rank: '#2 in USA' },
-  { name: 'University of Toronto', country: 'Canada', image: 'https://picsum.photos/seed/toronto/600/400', rank: '#1 in Canada' },
-  { name: 'University of British Columbia', country: 'Canada', image: 'https://picsum.photos/seed/ubc/600/400', rank: '#2 in Canada' },
-  { name: 'University of Melbourne', country: 'Australia', image: 'https://picsum.photos/seed/melbourne/600/400', rank: '#1 in Australia' },
-  { name: 'University of Sydney', country: 'Australia', image: 'https://picsum.photos/seed/sydney/600/400', rank: '#2 in Australia' },
-];
+import { useState } from 'react';
+import ContactForm from './components/ContactForm';
+import AICounselor from './components/AICounselor';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import WhatsAppButton from './components/WhatsAppButton';
+import AnimatedCounter from './components/AnimatedCounter';
+import MagneticButton from './components/MagneticButton';
+import TiltCard from './components/TiltCard';
+import SmoothReveal from './components/SmoothReveal';
+import TextReveal from './components/TextReveal';
+import { useTheme } from '@/hooks/use-theme';
+import {
+  UNIVERSITIES, COUNTRIES, SERVICES, PROCESS_STEPS,
+  TESTIMONIALS, MINI_TESTIMONIALS, WHY_US, MARQUEE_ITEMS,
+} from '@/lib/data';
 
 export default function Home() {
-  const [isDarkMode, setIsDarkMode] = useState(false);
-  const [activeSection, setActiveSection] = useState('');
+  const { isDark: isDarkMode, toggle: toggleDark } = useTheme();
   const [selectedCountry, setSelectedCountry] = useState('All');
 
-  const filteredUniversities = selectedCountry === 'All' 
-    ? universities 
-    : universities.filter(u => u.country === selectedCountry);
-
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [isDarkMode]);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: '-40% 0px -40% 0px' }
-    );
-
-    const sections = document.querySelectorAll('section[id]');
-    sections.forEach((section) => observer.observe(section));
-
-    return () => observer.disconnect();
-  }, []);
+  const filteredUniversities = selectedCountry === 'All'
+    ? UNIVERSITIES
+    : UNIVERSITIES.filter(u => u.country === selectedCountry);
 
   const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 
   return (
-    <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-yellow selection:bg-brand-yellow selection:text-brand-purple font-sans transition-colors duration-500">
-      
-      {/* Scroll Progress Bar */}
+    <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light font-sans transition-colors duration-500 overflow-x-hidden">
+
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1.5 bg-brand-yellow origin-left z-[100] shadow-[0_0_10px_rgba(255,211,106,0.5)]"
+        className="fixed top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-brand-purple via-brand-yellow to-brand-purple origin-left z-[100]"
         style={{ scaleX }}
       />
 
-      {/* Unique Floating Pill Navigation */}
-      <nav className="fixed top-6 left-1/2 -translate-x-1/2 bg-white/80 dark:bg-brand-dark/80 backdrop-blur-md px-2 py-2 rounded-full shadow-sm border border-brand-purple/10 dark:border-brand-yellow/20 flex items-center gap-2 md:gap-8 z-50 w-[90%] md:w-auto justify-between md:justify-center transition-colors duration-500">
-        <div className="flex items-center gap-2 pl-4">
-          <Globe className="text-brand-purple dark:text-brand-yellow w-5 h-5 transition-colors duration-500" />
-          <span className="font-display font-bold text-brand-purple dark:text-brand-yellow tracking-tight transition-colors duration-500">Educar.</span>
-        </div>
-        <div className="hidden md:flex items-center gap-2 text-sm font-medium text-brand-dark/70 dark:text-brand-yellow/70">
-          {[
-            { name: 'Destinations', id: 'destinations' },
-            { name: 'Expertise', id: 'expertise' },
-            { name: 'Approach', id: 'approach' },
-            { name: 'Testimonials', id: 'testimonials' }
-          ].map((link) => (
-            <Link 
-              key={link.name} 
-              href={`#${link.id}`} 
-              className={`relative px-4 py-2 transition-colors ${activeSection === link.id ? 'text-brand-purple dark:text-brand-yellow font-bold' : 'hover:text-brand-purple dark:hover:text-white'}`}
-            >
-              {link.name}
-              {activeSection === link.id && (
-                <motion.div
-                  layoutId="activeNavIndicator"
-                  className="absolute bottom-0 left-4 right-4 h-0.5 bg-brand-purple dark:bg-brand-yellow rounded-full"
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                />
-              )}
-            </Link>
-          ))}
-        </div>
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            className="p-2 rounded-full hover:bg-brand-purple/5 dark:hover:bg-brand-yellow/10 text-brand-purple dark:text-brand-yellow transition-colors"
-            aria-label="Toggle dark mode"
-          >
-            {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-          </button>
-          <button className="bg-brand-purple dark:bg-brand-yellow text-brand-yellow dark:text-brand-dark px-6 py-2.5 rounded-full text-sm font-medium hover:bg-brand-dark dark:hover:bg-white hover:scale-105 hover:shadow-lg hover:shadow-brand-purple/40 dark:hover:shadow-brand-yellow/20 transition-all duration-300 flex items-center gap-2">
-            Let&apos;s Talk
-          </button>
-        </div>
-      </nav>
+      <Navbar isDarkMode={isDarkMode} onToggleDark={toggleDark} />
 
-      {/* Elegant Typographic Hero */}
-      <section id="home" className="min-h-screen flex items-center pt-32 pb-20 px-6 md:px-16 lg:px-24 relative overflow-hidden">
-        {/* Abstract Art Element */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/3 w-[400px] h-[400px] md:w-[600px] md:h-[600px] bg-brand-yellow rounded-full mix-blend-multiply filter blur-[80px] md:blur-[120px] opacity-40 animate-pulse"></div>
-        
-        <div className="max-w-5xl relative z-10">
-          <motion.h1 
-            initial={{ opacity: 0, y: 30 }}
+      {/* ── Hero ────────────────────────────────────────────────────── */}
+      <section className="relative min-h-[100dvh] flex items-center pt-24 pb-12 px-5 sm:px-8 md:px-16 lg:px-24 overflow-hidden">
+        {/* Aurora blobs */}
+        <div className="aurora-blob aurora-blob-1 -top-40 -right-40 opacity-60" />
+        <div className="aurora-blob aurora-blob-2 top-1/3 -left-60 opacity-50" />
+        <div className="aurora-blob aurora-blob-3 bottom-20 right-1/4 opacity-40" />
+
+        {/* Morphing decorative shape */}
+        <div className="absolute top-32 right-12 w-72 h-72 sm:w-96 sm:h-96 morph-shape bg-gradient-to-br from-brand-purple/5 to-brand-yellow/5 dark:from-brand-purple/10 dark:to-brand-yellow/5 pointer-events-none" />
+
+        {/* Floating decorative elements */}
+        <div className="absolute top-40 right-20 w-3 h-3 rounded-full bg-brand-purple/20 dark:bg-brand-yellow/20 animate-float" />
+        <div className="absolute top-60 right-40 w-2 h-2 rounded-full bg-brand-yellow/30 animate-float-delayed" />
+        <div className="absolute bottom-40 left-20 w-4 h-4 rounded-full bg-brand-purple/10 dark:bg-brand-yellow/10 animate-float-slow" />
+
+        <div className="max-w-6xl mx-auto w-full relative z-10">
+
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-5xl md:text-7xl lg:text-8xl font-display font-light text-brand-purple dark:text-brand-yellow leading-[1.1] tracking-tight transition-colors duration-500"
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 bg-brand-purple/6 dark:bg-brand-yellow/8 rounded-full px-4 py-1.5 mb-8 glass-card"
           >
-            Your gateway to <span className="font-bold">studying</span><br/>
-            abroad <span className="relative inline-block">
-              seamlessly.
-              <span className="absolute bottom-2 left-0 w-full h-3 md:h-6 bg-brand-yellow dark:bg-brand-purple -z-10 rounded-full opacity-80 transition-colors duration-500"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-brand-purple dark:bg-brand-yellow animate-pulse" />
+            <span className="text-[11px] font-mono text-brand-purple dark:text-brand-yellow uppercase tracking-wider">
+              Govt. Authorized · Since 2017
             </span>
-          </motion.h1>
-          
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="mt-8 text-lg md:text-2xl text-brand-dark/70 dark:text-brand-yellow/70 max-w-2xl font-light leading-relaxed transition-colors duration-500"
-          >
-            We guide students through every step of their international study journey with expert counseling and personalized support.
-          </motion.p>
+          </motion.div>
+
+          <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-[1.06] tracking-tight max-w-4xl">
+            <TextReveal as="h1" className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-[1.06] tracking-tight" delay={0.1}>
+              We turn study abroad
+            </TextReveal>
+            <br />
+            <TextReveal as="span" className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-[1.06] tracking-tight text-gradient" delay={0.3}>
+              dreams into reality.
+            </TextReveal>
+          </div>
+
+          <SmoothReveal delay={0.4} direction="up">
+            <p className="mt-6 sm:mt-8 text-base sm:text-lg text-brand-dark/55 dark:text-brand-light/50 max-w-xl leading-relaxed">
+              Educar International guides Nepalese students from university selection to visa approval and post-arrival support.
+            </p>
+          </SmoothReveal>
+
+          <SmoothReveal delay={0.55} direction="up">
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <MagneticButton strength={0.2}>
+                <Link
+                  href="#contact"
+                  className="inline-flex items-center justify-center gap-2 bg-brand-purple dark:bg-brand-yellow text-white dark:text-brand-dark px-7 py-3.5 rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity glow-purple dark:glow-yellow"
+                >
+                  Start Your Journey
+                  <ArrowUpRight className="w-4 h-4" />
+                </Link>
+              </MagneticButton>
+              <MagneticButton strength={0.15}>
+                <Link
+                  href="/destinations"
+                  className="inline-flex items-center justify-center gap-2 border border-brand-dark/12 dark:border-brand-light/12 text-brand-dark/70 dark:text-brand-light/70 px-7 py-3.5 rounded-xl font-medium text-sm hover:border-brand-purple/30 dark:hover:border-brand-yellow/30 hover:text-brand-purple dark:hover:text-brand-yellow transition-all glass-card"
+                >
+                  Explore Destinations
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </MagneticButton>
+            </div>
+          </SmoothReveal>
 
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="mt-16 flex items-center gap-4 text-sm font-mono uppercase tracking-widest text-brand-purple/60 dark:text-brand-yellow/60 transition-colors duration-500"
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="mt-14 sm:mt-20 flex gap-10 sm:gap-16"
           >
-            <span>Scroll to explore</span>
-            <div className="w-12 h-px bg-brand-purple/30 dark:bg-brand-yellow/30 transition-colors duration-500"></div>
+            {[
+              { value: '7+', label: 'Years' },
+              { value: '5', label: 'Countries' },
+              { value: '100%', label: 'Satisfaction' },
+            ].map((s, i) => (
+              <div key={i}>
+                <AnimatedCounter value={s.value} className="text-3xl sm:text-4xl font-display font-bold text-gradient" />
+                <p className="text-[11px] font-mono text-brand-dark/35 dark:text-brand-light/35 uppercase tracking-wider mt-1">{s.label}</p>
+              </div>
+            ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Destinations Section with Country Filter */}
-      <section id="destinations" className="py-24 px-6 md:px-16 lg:px-24 bg-brand-light dark:bg-brand-dark transition-colors duration-500">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+      {/* ── Marquee ─────────────────────────────────────────────────── */}
+      <div className="py-3.5 bg-brand-dark dark:bg-brand-yellow/5 overflow-hidden border-y border-brand-dark/5 dark:border-brand-yellow/10 marquee-fade">
+        <div className="flex gap-0 animate-marquee whitespace-nowrap">
+          {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
+            <span key={i} className="inline-flex items-center gap-8 shrink-0 px-8">
+              <span className="text-brand-light/50 dark:text-brand-light/30 font-mono text-xs uppercase tracking-[0.2em]">{item}</span>
+              <span className="text-brand-light/15 dark:text-brand-light/10 text-[8px]">·</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── CEO ─────────────────────────────────────────────────────── */}
+      <section className="py-20 sm:py-28 px-5 sm:px-8 md:px-16 lg:px-24 relative overflow-hidden">
+        <div className="aurora-blob aurora-blob-2 -top-40 right-0 opacity-30" />
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 md:gap-20 items-center relative z-10">
+          <SmoothReveal direction="left" className="order-2 md:order-1">
+            <TiltCard className="rounded-2xl overflow-hidden" tiltStrength={6}>
+              <div className="relative aspect-[4/5] rounded-2xl overflow-hidden">
+                <Image
+                  src="https://picsum.photos/seed/ceo-office/800/900"
+                  alt="CEO Ashish Mahat"
+                  fill
+                  className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
+                  referrerPolicy="no-referrer"
+                />
+                <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/60 to-transparent">
+                  <p className="font-display font-bold text-white text-lg">Ashish Mahat</p>
+                  <p className="text-white/60 text-xs font-mono uppercase tracking-wider">CEO · Educar International</p>
+                </div>
+              </div>
+            </TiltCard>
+          </SmoothReveal>
+
+          <SmoothReveal direction="right" className="order-1 md:order-2">
             <div>
-              <h2 className="text-sm font-mono uppercase tracking-widest text-brand-purple/60 dark:text-brand-yellow/60 mb-4 transition-colors duration-500">Destinations</h2>
-              <h3 className="text-4xl md:text-5xl font-display font-bold text-brand-purple dark:text-brand-yellow transition-colors duration-500">Where to next?</h3>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              {countries.map(country => (
-                <button
-                  key={country}
-                  onClick={() => setSelectedCountry(country)}
-                  className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                    selectedCountry === country 
-                      ? 'bg-brand-purple dark:bg-brand-yellow text-brand-yellow dark:text-brand-purple shadow-md' 
-                      : 'bg-transparent border border-brand-purple/20 dark:border-brand-yellow/20 text-brand-purple dark:text-brand-yellow hover:border-brand-purple dark:hover:border-brand-yellow'
-                  }`}
-                >
-                  {country}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredUniversities.map((uni, i) => (
-              <motion.div
-                key={uni.name}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group rounded-3xl overflow-hidden bg-white dark:bg-brand-dark/50 border border-brand-purple/10 dark:border-brand-yellow/10 hover:shadow-xl hover:shadow-brand-purple/5 dark:hover:shadow-brand-yellow/5 transition-all duration-500"
-              >
-                <div className="relative h-48 overflow-hidden">
-                  <Image src={uni.image} alt={uni.name} fill className="object-cover group-hover:scale-110 transition-transform duration-700" referrerPolicy="no-referrer" />
-                  <div className="absolute top-4 left-4 bg-white/90 dark:bg-brand-dark/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-brand-purple dark:text-brand-yellow flex items-center gap-1">
-                    <MapPin className="w-3 h-3" /> {uni.country}
-                  </div>
-                </div>
-                <div className="p-6">
-                  <p className="text-xs font-mono text-brand-purple/60 dark:text-brand-yellow/60 mb-2 uppercase tracking-wider transition-colors duration-500">{uni.rank}</p>
-                  <h4 className="text-xl font-display font-bold text-brand-purple dark:text-brand-yellow mb-4 leading-tight transition-colors duration-500">{uni.name}</h4>
-                  <Link href="#" className="inline-flex items-center gap-2 text-sm font-medium text-brand-purple dark:text-brand-yellow hover:opacity-70 transition-opacity">
-                    Explore Programs <ArrowUpRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Minimalist Services Section with Soft Architectural Curve */}
-      <section id="expertise" className="py-32 px-6 md:px-16 lg:px-24 bg-brand-purple dark:bg-brand-yellow text-brand-light dark:text-brand-purple rounded-t-[3rem] md:rounded-t-[5rem] transition-colors duration-500">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-sm font-mono uppercase tracking-widest text-brand-yellow dark:text-brand-purple/60 mb-20 transition-colors duration-500">Our Expertise</h2>
-          
-          <div className="flex flex-col">
-            {[
-              { num: "01", icon: GraduationCap, title: "University Admissions", desc: "Expert guidance on selecting the right universities and crafting winning applications." },
-              { num: "02", icon: FileCheck, title: "Visa Assistance", desc: "Comprehensive support for student visa applications, ensuring a smooth process." },
-              { num: "03", icon: Compass, title: "Career Counseling", desc: "Aligning your educational choices with your long-term global career goals." }
-            ].map((svc, i) => (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-                key={i} 
-                className="group border-t border-brand-light/20 dark:border-brand-purple/20 py-10 md:py-16 flex flex-col md:flex-row md:items-center gap-6 md:gap-12 hover:border-brand-yellow dark:hover:border-brand-purple transition-colors cursor-pointer"
-              >
-                <div className="flex items-center gap-6 md:w-48">
-                  <span className="font-mono text-brand-yellow dark:text-brand-purple/60 text-xl md:text-2xl transition-colors duration-500">{svc.num}</span>
-                  <div className="p-3 md:p-4 rounded-full bg-brand-light/5 dark:bg-brand-purple/5 text-brand-yellow dark:text-brand-purple group-hover:bg-brand-yellow dark:group-hover:bg-brand-purple group-hover:text-brand-purple dark:group-hover:text-brand-yellow transition-colors duration-500">
-                    <svc.icon className="w-6 h-6 md:w-8 md:h-8 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500" />
-                  </div>
-                </div>
-                <h3 className="text-3xl md:text-5xl lg:text-6xl font-display font-light flex-grow group-hover:translate-x-4 transition-transform duration-500">{svc.title}</h3>
-                <p className="max-w-md text-brand-light/70 dark:text-brand-purple/70 font-light text-lg leading-relaxed transition-colors duration-500">{svc.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Simple Text/Image Split */}
-      <section id="approach" className="py-32 px-6 md:px-16 lg:px-24 bg-brand-light dark:bg-brand-dark transition-colors duration-500">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            <h2 className="text-4xl md:text-5xl font-display font-bold text-brand-purple dark:text-brand-yellow mb-8 leading-tight transition-colors duration-500">
-              Global education is complex.<br/>
-              <span className="text-brand-dark dark:text-white font-light transition-colors duration-500">We make it simple.</span>
-            </h2>
-            <p className="text-lg text-brand-dark/70 dark:text-brand-yellow/70 font-light leading-relaxed mb-6 transition-colors duration-500">
-              We don&apos;t believe in a one-size-fits-all approach. We believe in crafting a personalized roadmap to your dream university.
-            </p>
-            <p className="text-lg text-brand-dark/70 dark:text-brand-yellow/70 font-light leading-relaxed transition-colors duration-500">
-              Our expert counselors work directly with you, bringing years of experience to secure your international future.
-            </p>
-          </motion.div>
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="relative h-[400px] md:h-[600px] rounded-[2rem] overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-brand-yellow/20 mix-blend-multiply z-10"></div>
-            <Image 
-              src="https://picsum.photos/seed/minimalist/800/1200" 
-              alt="Minimalist architecture" 
-              fill
-              className="object-cover grayscale opacity-90"
-              referrerPolicy="no-referrer"
-            />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section id="testimonials" className="py-24 px-6 md:px-16 lg:px-24 bg-brand-yellow dark:bg-brand-purple text-brand-purple dark:text-brand-yellow rounded-[3rem] md:rounded-[5rem] mx-4 md:mx-8 lg:mx-12 mb-32 relative z-20 shadow-2xl shadow-brand-yellow/20 dark:shadow-brand-purple/20 transition-colors duration-500">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-sm font-mono uppercase tracking-widest text-brand-purple/60 dark:text-brand-yellow/60 mb-16 text-center transition-colors duration-500">Student Success Stories</h2>
-          
-          <div className="grid md:grid-cols-3 gap-8 md:gap-12">
-            {[
-              { quote: "Educar made my dream of studying in the UK a reality. Their visa assistance was flawless and completely stress-free.", name: "Sarah J.", target: "University of Oxford, UK" },
-              { quote: "The career counseling helped me pivot my focus. I'm now thriving in my master's program abroad.", name: "David M.", target: "University of Toronto, Canada" },
-              { quote: "I was overwhelmed by the application process until I found Educar. They simplified everything for me.", name: "Priya K.", target: "University of Melbourne, Australia" }
-            ].map((testimonial, i) => (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.6, delay: i * 0.2 }}
-                key={i}
-                className="bg-white/40 dark:bg-brand-dark/40 backdrop-blur-sm border border-brand-purple/10 dark:border-brand-yellow/10 p-8 md:p-10 rounded-[2rem] hover:bg-white/60 dark:hover:bg-brand-dark/60 transition-colors"
-              >
-                <div className="text-brand-purple dark:text-brand-yellow text-6xl font-display leading-none mb-4 opacity-40 transition-colors duration-500">&quot;</div>
-                <p className="text-lg font-light leading-relaxed mb-8 text-brand-purple/90 dark:text-brand-yellow/90 transition-colors duration-500">
-                  {testimonial.quote}
+              <p className="text-[11px] font-mono text-brand-purple/50 dark:text-brand-yellow/50 uppercase tracking-[0.2em] mb-5">Message from the CEO</p>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold leading-tight mb-6">
+                Persistence, hard work
+                <br />
+                <span className="text-gradient">&amp; dedication.</span>
+              </h2>
+              <div className="space-y-4 text-brand-dark/60 dark:text-brand-light/50 leading-relaxed text-[15px]">
+                <p>
+                  &ldquo;Educar International has consistently remained committed to delivering the highest caliber of educational consulting services to the dynamic and aspiring youth of Nepal.
                 </p>
-                <div>
-                  <p className="font-bold text-brand-purple dark:text-brand-yellow font-display tracking-wide transition-colors duration-500">{testimonial.name}</p>
-                  <p className="text-sm font-mono text-brand-purple/60 dark:text-brand-yellow/60 mt-1 transition-colors duration-500">{testimonial.target}</p>
-                </div>
-              </motion.div>
+                <p>
+                  We are steadfast in our commitment to transform your aspirations for overseas education into reality — achieving a 100% satisfaction rate among students and their guardians.&rdquo;
+                </p>
+              </div>
+              <div className="mt-8 h-px bg-gradient-to-r from-brand-purple/20 via-brand-yellow/20 to-transparent" />
+              <p className="mt-4 text-xs font-mono text-brand-dark/30 dark:text-brand-light/30 uppercase tracking-wider">Ashish Mahat, CEO</p>
+            </div>
+          </SmoothReveal>
+        </div>
+      </section>
+
+      {/* ── Destinations ────────────────────────────────────────────── */}
+      <section className="py-20 sm:py-28 px-5 sm:px-8 md:px-16 lg:px-24 bg-white/50 dark:bg-white/[0.02] relative overflow-hidden">
+        <div className="aurora-blob aurora-blob-3 top-0 left-1/4 opacity-20" />
+        <div className="max-w-6xl mx-auto relative z-10">
+          <SmoothReveal>
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
+              <div>
+                <p className="text-[11px] font-mono text-brand-purple/50 dark:text-brand-yellow/50 uppercase tracking-[0.2em] mb-3">Partner Universities</p>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold">
+                  Your dream campus, <span className="text-gradient">worldwide.</span>
+                </h2>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {COUNTRIES.map(c => (
+                  <button
+                    key={c}
+                    onClick={() => setSelectedCountry(c)}
+                    className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                      selectedCountry === c
+                        ? 'bg-brand-purple dark:bg-brand-yellow text-white dark:text-brand-dark glow-purple dark:glow-yellow'
+                        : 'text-brand-dark/50 dark:text-brand-light/50 hover:bg-brand-dark/5 dark:hover:bg-brand-light/5'
+                    }`}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </SmoothReveal>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <AnimatePresence mode="popLayout">
+              {filteredUniversities.map((uni, i) => (
+                <motion.div
+                  key={uni.name}
+                  layout
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3, delay: i * 0.04 }}
+                >
+                  <TiltCard className="rounded-xl" tiltStrength={5}>
+                    <div className="group rounded-xl overflow-hidden glass-card hover:shadow-lg transition-all duration-300 gradient-border">
+                      <div className="relative h-40 overflow-hidden">
+                        <Image src={uni.image} alt={uni.name} fill className="object-cover group-hover:scale-105 transition-transform duration-500" referrerPolicy="no-referrer" />
+                        <div className="absolute top-2.5 left-2.5 bg-white/90 dark:bg-brand-dark/90 backdrop-blur-sm px-2 py-0.5 rounded-md text-[11px] font-medium text-brand-purple dark:text-brand-yellow flex items-center gap-1">
+                          <MapPin className="w-3 h-3" /> {uni.country}
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <h4 className="font-display font-bold text-sm leading-snug mb-0.5">{uni.name}</h4>
+                        <p className="text-[11px] text-brand-dark/40 dark:text-brand-light/40 font-mono">{uni.rank} · {uni.programs}</p>
+                      </div>
+                    </div>
+                  </TiltCard>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Services ────────────────────────────────────────────────── */}
+      <section className="py-20 sm:py-28 px-5 sm:px-8 md:px-16 lg:px-24 relative overflow-hidden">
+        <div className="aurora-blob aurora-blob-1 bottom-0 right-0 opacity-20" />
+        <div className="max-w-6xl mx-auto relative z-10">
+          <SmoothReveal>
+            <div className="mb-14">
+              <p className="text-[11px] font-mono text-brand-purple/50 dark:text-brand-yellow/50 uppercase tracking-[0.2em] mb-3">What We Do</p>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold max-w-lg">
+                Everything you need, <span className="text-gradient">nothing you don&apos;t.</span>
+              </h2>
+            </div>
+          </SmoothReveal>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {SERVICES.map((svc, i) => (
+              <SmoothReveal key={i} delay={i * 0.06}>
+                <TiltCard className="rounded-xl h-full" tiltStrength={4}>
+                  <div className="group p-6 rounded-xl glass-card hover:shadow-lg transition-all duration-300 h-full gradient-border">
+                    <div className="w-10 h-10 rounded-lg bg-brand-purple/8 dark:bg-brand-yellow/8 flex items-center justify-center mb-4 group-hover:bg-brand-purple/15 dark:group-hover:bg-brand-yellow/15 transition-colors">
+                      <svc.icon className="w-5 h-5 text-brand-purple dark:text-brand-yellow" />
+                    </div>
+                    <h3 className="font-display font-bold text-base mb-2">{svc.title}</h3>
+                    <p className="text-sm text-brand-dark/50 dark:text-brand-light/45 leading-relaxed">{svc.desc}</p>
+                    <div className="flex flex-wrap gap-1.5 mt-4">
+                      {svc.tags.map(tag => (
+                        <span key={tag} className="text-[10px] font-mono text-brand-purple/50 dark:text-brand-yellow/50 bg-brand-purple/4 dark:bg-brand-yellow/4 px-2 py-0.5 rounded">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </TiltCard>
+              </SmoothReveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Bold, Simple Footer CTA */}
-      <footer className="bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-yellow py-32 px-6 md:px-16 lg:px-24 border-t border-brand-purple/10 dark:border-brand-yellow/10 transition-colors duration-500">
-        <div className="max-w-4xl mx-auto flex flex-col items-center text-center">
-          <motion.div 
-            whileHover={{ scale: 1.05, rotate: 10 }}
-            className="w-20 h-20 md:w-24 md:h-24 bg-brand-yellow dark:bg-brand-purple rounded-full flex items-center justify-center mb-10 cursor-pointer shadow-lg shadow-brand-yellow/20 dark:shadow-brand-purple/20 transition-colors duration-500"
-          >
-            <ArrowUpRight className="w-10 h-10 text-brand-purple dark:text-brand-yellow transition-colors duration-500" />
-          </motion.div>
-          
-          <h2 className="text-5xl md:text-7xl font-display font-bold text-brand-purple dark:text-brand-yellow mb-10 tracking-tight transition-colors duration-500">
-            Start your journey.
-          </h2>
-          
-          <p className="text-brand-dark/70 dark:text-brand-yellow/70 mb-12 text-lg md:text-xl font-light transition-colors duration-500">
-            Reach out to us at <a href="mailto:hello@educarinternational.com" className="font-medium hover:text-brand-purple dark:hover:text-white border-b border-brand-dark/20 dark:border-brand-yellow/20 hover:border-brand-purple dark:hover:border-white transition-colors pb-1">hello@educarinternational.com</a> or fill out the form below.
-          </p>
+      {/* ── Why Us ──────────────────────────────────────────────────── */}
+      <section className="py-20 sm:py-28 px-5 sm:px-8 md:px-16 lg:px-24 bg-brand-dark dark:bg-[#120620] relative overflow-hidden">
+        <div className="aurora-blob aurora-blob-1 top-1/4 -left-40 opacity-30" />
+        <div className="aurora-blob aurora-blob-2 bottom-10 right-10 opacity-20" />
+        <div className="max-w-6xl mx-auto relative z-10">
+          <SmoothReveal>
+            <div className="text-center mb-14">
+              <p className="text-[11px] font-mono text-brand-yellow/50 uppercase tracking-[0.2em] mb-3">Why Educar</p>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-brand-light">
+                The <span className="text-gradient">difference.</span>
+              </h2>
+            </div>
+          </SmoothReveal>
 
-          <form className="w-full max-w-2xl mx-auto flex flex-col gap-6 text-left" onSubmit={(e) => e.preventDefault()}>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="flex flex-col gap-2">
-                <label htmlFor="name" className="text-sm font-mono uppercase tracking-widest text-brand-purple/70 dark:text-brand-yellow/70 transition-colors duration-500">Name</label>
-                <input type="text" id="name" className="bg-white dark:bg-brand-dark/50 border border-brand-purple/10 dark:border-brand-yellow/20 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-yellow dark:focus:ring-brand-purple focus:border-transparent transition-all text-brand-dark dark:text-brand-yellow placeholder:text-brand-dark/30 dark:placeholder:text-brand-yellow/30" placeholder="Your name" required />
-              </div>
-              <div className="flex flex-col gap-2">
-                <label htmlFor="email" className="text-sm font-mono uppercase tracking-widest text-brand-purple/70 dark:text-brand-yellow/70 transition-colors duration-500">Email</label>
-                <input type="email" id="email" className="bg-white dark:bg-brand-dark/50 border border-brand-purple/10 dark:border-brand-yellow/20 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-yellow dark:focus:ring-brand-purple focus:border-transparent transition-all text-brand-dark dark:text-brand-yellow placeholder:text-brand-dark/30 dark:placeholder:text-brand-yellow/30" placeholder="your@email.com" required />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="message" className="text-sm font-mono uppercase tracking-widest text-brand-purple/70 dark:text-brand-yellow/70 transition-colors duration-500">Message</label>
-              <textarea id="message" rows={4} className="bg-white dark:bg-brand-dark/50 border border-brand-purple/10 dark:border-brand-yellow/20 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-yellow dark:focus:ring-brand-purple focus:border-transparent transition-all resize-none text-brand-dark dark:text-brand-yellow placeholder:text-brand-dark/30 dark:placeholder:text-brand-yellow/30" placeholder="How can we help you?" required></textarea>
-            </div>
-            <button type="submit" className="mt-4 bg-brand-purple dark:bg-brand-yellow text-brand-yellow dark:text-brand-dark px-8 py-4 rounded-full text-lg font-medium hover:bg-brand-dark dark:hover:bg-white hover:scale-105 hover:shadow-lg hover:shadow-brand-purple/40 dark:hover:shadow-brand-yellow/20 transition-all duration-300 w-full md:w-auto md:self-center">
-              Send Message
-            </button>
-          </form>
-        </div>
-        
-        <div className="max-w-7xl mx-auto mt-32 flex flex-col md:flex-row justify-between items-center gap-6 text-sm font-mono text-brand-dark/50 dark:text-brand-yellow/50 uppercase tracking-widest transition-colors duration-500">
-          <span>© {new Date().getFullYear()} Educar International</span>
-          <div className="flex gap-8">
-            <Link href="#" className="hover:text-brand-purple dark:hover:text-white transition-colors">Instagram</Link>
-            <Link href="#" className="hover:text-brand-purple dark:hover:text-white transition-colors">Twitter</Link>
-            <Link href="#" className="hover:text-brand-purple dark:hover:text-white transition-colors">LinkedIn</Link>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {WHY_US.map((item, i) => (
+              <SmoothReveal key={i} delay={i * 0.06}>
+                <TiltCard className="rounded-xl h-full" tiltStrength={4}>
+                  <div className="p-6 rounded-xl glass hover:border-brand-yellow/15 transition-colors h-full">
+                    <CheckCircle className="w-5 h-5 text-brand-yellow mb-4 opacity-60" />
+                    <h3 className="font-display font-bold text-brand-light text-base mb-2">{item.title}</h3>
+                    <p className="text-sm text-brand-light/40 leading-relaxed">{item.desc}</p>
+                  </div>
+                </TiltCard>
+              </SmoothReveal>
+            ))}
           </div>
         </div>
-      </footer>
+      </section>
+
+      {/* ── Process ─────────────────────────────────────────────────── */}
+      <section className="py-20 sm:py-28 px-5 sm:px-8 md:px-16 lg:px-24 relative overflow-hidden">
+        <div className="aurora-blob aurora-blob-3 top-20 right-1/3 opacity-25" />
+        <div className="max-w-6xl mx-auto relative z-10">
+          <SmoothReveal>
+            <div className="mb-14">
+              <p className="text-[11px] font-mono text-brand-purple/50 dark:text-brand-yellow/50 uppercase tracking-[0.2em] mb-3">How It Works</p>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold">
+                Simple steps, <span className="text-gradient">big results.</span>
+              </h2>
+            </div>
+          </SmoothReveal>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {PROCESS_STEPS.map((ps, i) => (
+              <SmoothReveal key={i} delay={i * 0.08}>
+                <div className="relative p-6 rounded-xl glass-card gradient-border">
+                  <span className="text-5xl font-display font-bold text-brand-purple/8 dark:text-brand-yellow/8 absolute top-4 right-5">{ps.step}</span>
+                  <span className="inline-block text-[10px] font-mono text-brand-purple/50 dark:text-brand-yellow/50 uppercase tracking-wider mb-4">{ps.duration}</span>
+                  <h3 className="font-display font-bold text-lg mb-2">{ps.title}</h3>
+                  <p className="text-sm text-brand-dark/50 dark:text-brand-light/45 leading-relaxed">{ps.desc}</p>
+                </div>
+              </SmoothReveal>
+            ))}
+          </div>
+
+          <SmoothReveal delay={0.3}>
+            <div className="mt-12 bg-brand-purple dark:bg-brand-purple/20 rounded-2xl p-8 sm:p-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 glow-purple">
+              <div>
+                <h3 className="text-xl sm:text-2xl font-display font-bold text-white mb-2">All you need is a passport.</h3>
+                <p className="text-white/50 text-sm max-w-md">The rest is in our capable hands. Our counselors are with you 24/7.</p>
+              </div>
+              <MagneticButton strength={0.2}>
+                <Link
+                  href="#contact"
+                  className="inline-flex items-center gap-2 bg-brand-yellow text-brand-dark px-6 py-3 rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity shrink-0"
+                >
+                  Book Free Session
+                  <ArrowUpRight className="w-4 h-4" />
+                </Link>
+              </MagneticButton>
+            </div>
+          </SmoothReveal>
+        </div>
+      </section>
+
+      {/* ── Testimonials ────────────────────────────────────────────── */}
+      <section className="py-20 sm:py-28 px-5 sm:px-8 md:px-16 lg:px-24 bg-white/50 dark:bg-white/[0.02] relative overflow-hidden">
+        <div className="aurora-blob aurora-blob-2 -top-20 left-1/3 opacity-20" />
+        <div className="max-w-6xl mx-auto relative z-10">
+          <SmoothReveal>
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
+              <div>
+                <p className="text-[11px] font-mono text-brand-purple/50 dark:text-brand-yellow/50 uppercase tracking-[0.2em] mb-3">Student Stories</p>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold">
+                  Real students, <span className="text-gradient">real results.</span>
+                </h2>
+              </div>
+              <div className="flex items-center gap-1.5">
+                {[1,2,3,4,5].map(i => <Star key={i} className="w-4 h-4 text-brand-yellow fill-current" />)}
+                <span className="ml-1.5 text-sm font-bold">5.0</span>
+              </div>
+            </div>
+          </SmoothReveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {TESTIMONIALS.map((t, i) => (
+              <SmoothReveal key={i} delay={i * 0.1}>
+                <TiltCard className="rounded-xl h-full" tiltStrength={3}>
+                  <div className="p-6 rounded-xl glass-card flex flex-col h-full gradient-border">
+                    <div className="flex gap-0.5 mb-4">
+                      {[1,2,3,4,5].map(j => <Star key={j} className="w-3 h-3 text-brand-yellow fill-current" />)}
+                    </div>
+                    <p className="text-sm text-brand-dark/70 dark:text-brand-light/70 leading-relaxed flex-1">
+                      &ldquo;{t.quote}&rdquo;
+                    </p>
+                    <div className="flex items-center gap-3 mt-6 pt-5 border-t border-brand-dark/6 dark:border-brand-light/6">
+                      <div className="w-9 h-9 rounded-full overflow-hidden relative shrink-0 bg-brand-purple/10 dark:bg-brand-yellow/10">
+                        <Image src={t.avatar} alt={t.name} fill className="object-cover" referrerPolicy="no-referrer" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-sm">{t.name}</p>
+                        <p className="text-[11px] text-brand-dark/40 dark:text-brand-light/40 font-mono">{t.program}</p>
+                      </div>
+                    </div>
+                  </div>
+                </TiltCard>
+              </SmoothReveal>
+            ))}
+          </div>
+
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {MINI_TESTIMONIALS.map((mini, i) => (
+              <SmoothReveal key={i} delay={i * 0.06}>
+                <div className="p-4 rounded-lg glass-card">
+                  <p className="text-xs text-brand-dark/55 dark:text-brand-light/55 leading-relaxed mb-2 italic">&ldquo;{mini.quote}&rdquo;</p>
+                  <p className="text-[11px] font-bold text-brand-purple dark:text-brand-yellow font-mono">— {mini.name}</p>
+                </div>
+              </SmoothReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Contact ─────────────────────────────────────────────────── */}
+      <section id="contact" className="py-20 sm:py-28 px-5 sm:px-8 md:px-16 lg:px-24 bg-brand-dark dark:bg-[#120620] relative overflow-hidden">
+        <div className="aurora-blob aurora-blob-1 top-0 right-1/4 opacity-25" />
+        <div className="aurora-blob aurora-blob-3 bottom-0 left-10 opacity-15" />
+        <div className="max-w-5xl mx-auto relative z-10">
+          <SmoothReveal>
+            <div className="text-center mb-14">
+              <p className="text-[11px] font-mono text-brand-yellow/50 uppercase tracking-[0.2em] mb-3">Get Started</p>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold text-brand-light mb-4">
+                Your future starts with
+                <br className="hidden sm:block" />
+                <span className="text-gradient"> a conversation.</span>
+              </h2>
+              <p className="text-brand-light/40 text-sm sm:text-base max-w-md mx-auto">
+                Free initial consultation. No commitment required.
+              </p>
+            </div>
+          </SmoothReveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+            <SmoothReveal direction="left">
+              <div className="flex flex-col gap-3">
+                {[
+                  { icon: Mail,   label: 'Email',   value: 'info@educarinternational.edu.np' },
+                  { icon: Phone,  label: 'Phone',   value: '015005528 · +977-9810646177' },
+                  { icon: MapPin, label: 'Office',  value: 'Chakupat-10, Patan Dhoka Road, Lalitpur' },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-4 p-4 rounded-xl glass hover:border-brand-yellow/15 transition-colors">
+                    <div className="w-9 h-9 rounded-lg bg-brand-yellow/8 flex items-center justify-center shrink-0">
+                      <item.icon className="w-4 h-4 text-brand-yellow" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] text-brand-light/30 font-mono uppercase tracking-wider">{item.label}</p>
+                      <p className="text-brand-light text-sm font-medium">{item.value}</p>
+                    </div>
+                  </div>
+                ))}
+                <div className="mt-2 p-5 glass rounded-xl border-brand-yellow/10">
+                  <p className="text-brand-yellow font-display font-bold text-sm mb-1">Free Consultation</p>
+                  <p className="text-brand-light/35 text-xs leading-relaxed">
+                    Talk directly with a senior counselor — no bots, no scripts.
+                  </p>
+                </div>
+              </div>
+            </SmoothReveal>
+
+            <SmoothReveal direction="right">
+              <ContactForm />
+            </SmoothReveal>
+          </div>
+        </div>
+      </section>
+
+      <WhatsAppButton />
+      <AICounselor />
+      <Footer />
     </div>
   );
 }
