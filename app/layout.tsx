@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Space_Grotesk, JetBrains_Mono } from 'next/font/google';
+import { Montserrat, EB_Garamond, MonteCarlo, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from './components/ThemeProvider';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-display' });
+const montserrat = Montserrat({ subsets: ['latin'], variable: '--font-sans', weight: ['300', '400', '500', '600', '700'] });
+const ebGaramond = EB_Garamond({ subsets: ['latin'], variable: '--font-display', weight: ['400', '500', '600', '700', '800'] });
+const monteCarlo = MonteCarlo({ subsets: ['latin'], variable: '--font-script', weight: ['400'] });
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
 
 export const metadata: Metadata = {
@@ -26,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} scroll-smooth`}
+      className={`${montserrat.variable} ${ebGaramond.variable} ${monteCarlo.variable} ${jetbrainsMono.variable} scroll-smooth`}
       suppressHydrationWarning
     >
       <head>

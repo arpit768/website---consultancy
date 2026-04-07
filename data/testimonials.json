@@ -1,0 +1,60 @@
+{
+  "testimonials": [
+    {
+      "id": "t-01",
+      "quote": "Choosing Educar International was one of the best decisions I made. Their expert guidance and unwavering support made my journey to the UK smooth and worry-free. I wholeheartedly recommend Educar to anyone aspiring to study abroad.",
+      "name": "Binu Lama",
+      "program": "BSc Nursing (3rd Year Entry)",
+      "target": "University of the West of Scotland, UK",
+      "avatar": "https://picsum.photos/seed/binu/100/100",
+      "country": "UK",
+      "rating": 5
+    },
+    {
+      "id": "t-02",
+      "quote": "From documentation and university applications to visa preparation — the Educar team guided me with patience, expertise, and constant support. What I valued most was their transparency; they never gave false promises and always provided honest guidance.",
+      "name": "Karuna Purja",
+      "program": "Study Abroad — UK",
+      "target": "Referred via Instagram · Visa Approved",
+      "avatar": "https://picsum.photos/seed/karuna/100/100",
+      "country": "UK",
+      "rating": 5
+    },
+    {
+      "id": "t-03",
+      "quote": "After my US visa rejection, Educar gave me a fresh start with the UK route. From my application to offer letter, English test, CAS, and visa interview — their professional advice made it smooth and stress-free. I am now holding my UK student visa.",
+      "name": "Priya Rajbanshi",
+      "program": "Bachelor's in Nursing (Top-Up)",
+      "target": "University of the West of Scotland, UK",
+      "avatar": "https://picsum.photos/seed/priyar/100/100",
+      "country": "UK",
+      "rating": 5
+    }
+  ],
+  "miniTestimonials": [
+    {
+      "id": "mt-01",
+      "name": "Soniya Chitrakar",
+      "quote": "From the first day, Educar made me feel confident. Now I'm in the UK, working and truly happy.",
+      "country": "UK"
+    },
+    {
+      "id": "mt-02",
+      "name": "Deepa Lama",
+      "quote": "Fast, reliable, and always supportive. I'm now settled in the UK and satisfied with my future.",
+      "country": "UK"
+    },
+    {
+      "id": "mt-03",
+      "name": "Anjali Dangi",
+      "quote": "Educar gave me the right direction at the right time. Their support was genuine and friendly.",
+      "country": "UK"
+    },
+    {
+      "id": "mt-04",
+      "name": "Ronit Tandukar",
+      "quote": "Educar International was the turning point in my life. Now living the life I always wished for.",
+      "country": "UK"
+    }
+  ]
+}

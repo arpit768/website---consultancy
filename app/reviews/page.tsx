@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -16,24 +16,38 @@ import TiltCard from '@/app/components/TiltCard';
 import SmoothReveal from '@/app/components/SmoothReveal';
 import TextReveal from '@/app/components/TextReveal';
 import { useThemeContext } from '@/app/components/ThemeProvider';
-import { TESTIMONIALS, MINI_TESTIMONIALS } from '@/lib/data';
+
+type Testimonial = {
+  id: string; quote: string; name: string; program: string;
+  target: string; avatar: string; country: string; rating: number;
+};
+type MiniTestimonial = { id: string; name: string; quote: string; country: string };
 
 const COUNTRIES_FILTER = ['All', 'UK', 'USA', 'Canada', 'Australia', 'Japan'];
 
 const RATING_ASPECTS = [
-  { label: 'Expertise', pct: 100 },
-  { label: 'Documentation', pct: 98 },
-  { label: 'Visa Guidance', pct: 97 },
-  { label: 'Communication', pct: 100 },
-  { label: 'Overall', pct: 100 },
+  { label: 'Expertise',      pct: 100 },
+  { label: 'Documentation',  pct: 98  },
+  { label: 'Visa Guidance',  pct: 97  },
+  { label: 'Communication',  pct: 100 },
+  { label: 'Overall',        pct: 100 },
 ];
 
 export default function ReviewsPage() {
   const { isDark, toggle } = useThemeContext();
   const [selectedCountry, setSelectedCountry] = useState('All');
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [miniTestimonials, setMiniTestimonials] = useState<MiniTestimonial[]>([]);
 
-  const filteredTestimonials = selectedCountry === 'All' ? TESTIMONIALS : TESTIMONIALS.filter((t) => t.country === selectedCountry);
-  const filteredMini = selectedCountry === 'All' ? MINI_TESTIMONIALS : MINI_TESTIMONIALS.filter((t) => t.country === selectedCountry);
+  useEffect(() => {
+    fetch('/api/admin/testimonials').then(r => r.json()).then(d => {
+      setTestimonials(d.testimonials ?? []);
+      setMiniTestimonials(d.miniTestimonials ?? []);
+    });
+  }, []);
+
+  const filteredTestimonials = selectedCountry === 'All' ? testimonials : testimonials.filter((t) => t.country === selectedCountry);
+  const filteredMini = selectedCountry === 'All' ? miniTestimonials : miniTestimonials.filter((t) => t.country === selectedCountry);
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light font-sans transition-colors duration-500">
@@ -145,16 +159,16 @@ export default function ReviewsPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {filteredTestimonials.map((t, i) => (
-                <SmoothReveal key={i} delay={i * 0.08}>
+                <SmoothReveal key={t.id} delay={i * 0.08}>
                   <TiltCard className="rounded-xl h-full" tiltStrength={3}>
                     <div className="p-6 rounded-xl glass-card flex flex-col h-full gradient-border">
                       <div className="flex gap-0.5 mb-4">
-                        {[1,2,3,4,5].map(j => <Star key={j} className="w-3 h-3 text-brand-yellow fill-current" />)}
+                        {Array.from({ length: t.rating }).map((_, j) => <Star key={j} className="w-3 h-3 text-brand-yellow fill-current" />)}
                       </div>
                       <p className="text-sm text-brand-dark/65 dark:text-brand-light/65 leading-relaxed flex-1 italic">&ldquo;{t.quote}&rdquo;</p>
                       <div className="flex items-center gap-3 mt-5 pt-4 border-t border-brand-dark/6 dark:border-brand-light/6">
                         <div className="w-8 h-8 rounded-full overflow-hidden relative shrink-0 bg-brand-purple/8 dark:bg-brand-yellow/8">
-                          <Image src={t.avatar} alt={t.name} fill className="object-cover" referrerPolicy="no-referrer" />
+                          {t.avatar && <Image src={t.avatar} alt={t.name} fill className="object-cover" referrerPolicy="no-referrer" unoptimized />}
                         </div>
                         <div>
                           <p className="font-bold text-sm">{t.name}</p>
@@ -171,7 +185,7 @@ export default function ReviewsPage() {
           {filteredMini.length > 0 && (
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {filteredMini.map((mini, i) => (
-                <SmoothReveal key={i} delay={i * 0.06}>
+                <SmoothReveal key={mini.id} delay={i * 0.06}>
                   <div className="p-4 rounded-lg glass-card">
                     <p className="text-xs text-brand-dark/50 dark:text-brand-light/50 leading-relaxed mb-2 italic">&ldquo;{mini.quote}&rdquo;</p>
                     <p className="text-[10px] font-bold text-brand-purple dark:text-brand-yellow font-mono">— {mini.name}</p>
