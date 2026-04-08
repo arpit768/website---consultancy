@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
-import { ArrowUpRight, CheckCircle, ChevronDown, ArrowRight } from 'lucide-react';
+import { ArrowUpRight, CheckCircle, ChevronDown, ArrowRight, AlertCircle } from 'lucide-react';
 import { GraduationCap } from 'lucide-react';
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
@@ -26,9 +26,35 @@ export default function ServicesPage() {
   const { isDark, toggle } = useThemeContext();
   const [expandedIdx, setExpandedIdx] = useState<number | null>(null);
   const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetch('/api/admin/services').then(r => r.json()).then(setServices);
+    const loadServices = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/admin/services');
+        if (!response.ok) throw new Error('Failed to fetch services');
+        const data = await response.json();
+
+        // Use fetched data if available, otherwise fallback to empty
+        if (Array.isArray(data) && data.length > 0) {
+          setServices(data);
+        } else {
+          // You can add fallback static data here if needed
+          setServices([]);
+        }
+        setError(false);
+      } catch (err) {
+        console.error('Error loading services:', err);
+        setError(true);
+        setServices([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadServices();
   }, []);
 
   return (
@@ -63,7 +89,46 @@ export default function ServicesPage() {
       <section className="py-16 sm:py-20 px-5 sm:px-8 md:px-16 lg:px-24 relative overflow-hidden">
         <div className="aurora-blob aurora-blob-2 top-1/3 right-0 opacity-15" />
         <div className="max-w-4xl mx-auto relative z-10">
-          <div className="flex flex-col gap-3">
+          {loading && (
+            <div className="flex flex-col gap-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="border border-brand-dark/6 dark:border-brand-light/6 rounded-xl p-6 animate-pulse">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-lg bg-brand-dark/10 dark:bg-brand-light/10" />
+                    <div className="flex-1">
+                      <div className="h-4 bg-brand-dark/10 dark:bg-brand-light/10 rounded w-48 mb-2" />
+                      <div className="h-3 bg-brand-dark/10 dark:bg-brand-light/10 rounded w-72" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {error && !loading && (
+            <div className="flex flex-col items-center gap-4 py-16 px-8 text-center bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 rounded-xl">
+              <AlertCircle className="w-12 h-12 text-red-500" />
+              <div>
+                <h3 className="font-display font-bold text-brand-dark dark:text-brand-light text-lg mb-1">Failed to Load Services</h3>
+                <p className="text-brand-dark/60 dark:text-brand-light/60 text-sm mb-4">We couldn't load the services at the moment. Please try again later.</p>
+              </div>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors"
+              >
+                Try Again
+              </button>
+            </div>
+          )}
+
+          {!loading && !error && services.length === 0 && (
+            <div className="text-center py-16">
+              <p className="text-brand-dark/50 dark:text-brand-light/50 text-sm font-mono">No services available at the moment.</p>
+            </div>
+          )}
+
+          {!loading && !error && services.length > 0 && (
+            <div className="flex flex-col gap-3">
             {services.map((svc, i) => {
               const IconComp = ICON_MAP[svc.icon] ?? GraduationCap;
               return (
@@ -144,7 +209,8 @@ export default function ServicesPage() {
                 </SmoothReveal>
               );
             })}
-          </div>
+            </div>
+          )}
         </div>
       </section>
 

@@ -26,7 +26,7 @@ export default function Navbar({ isDarkMode, onToggleDark }: NavbarProps) {
       <div className="bg-white/75 dark:bg-brand-dark/80 backdrop-blur-xl px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl shadow-lg shadow-brand-purple/5 border border-brand-purple/10 dark:border-brand-yellow/10 flex items-center justify-between transition-colors duration-500">
 
         <Link href="/" className="flex items-center">
-          <div className="relative h-8 w-28 sm:h-10 sm:w-36 dark:bg-white dark:rounded-lg dark:px-1">
+          <div className="relative h-8 w-28 sm:h-10 sm:w-36">
             <Image
               src="/logo.png"
               alt="Educar International"
@@ -38,7 +38,7 @@ export default function Navbar({ isDarkMode, onToggleDark }: NavbarProps) {
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-1 text-sm font-medium">
+        <div className="hidden md:flex items-center gap-1 xl:gap-2 text-sm font-medium">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.name}
@@ -63,13 +63,6 @@ export default function Navbar({ isDarkMode, onToggleDark }: NavbarProps) {
           >
             {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
-          <Link
-            href="/#contact"
-            className="text-brand-purple dark:text-brand-yellow px-4 py-2 rounded-xl text-sm font-medium border border-brand-purple/20 dark:border-brand-yellow/20 hover:bg-brand-purple/5 dark:hover:bg-brand-yellow/5 transition-all duration-200 flex items-center gap-1.5"
-          >
-            Book Now
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
           <Link
             href="/#contact"
             className="bg-brand-purple dark:bg-brand-yellow text-white dark:text-brand-dark px-5 py-2 rounded-xl text-sm font-semibold hover:opacity-90 hover:shadow-lg hover:shadow-brand-purple/25 hover:-translate-y-px transition-all duration-200 flex items-center gap-1.5"

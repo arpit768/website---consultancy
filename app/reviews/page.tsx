@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Star, ArrowRight, MessageCircle } from 'lucide-react';
+import { Star, ArrowRight, MessageCircle, AlertCircle } from 'lucide-react';
 import Navbar from '@/app/components/Navbar';
 import Footer from '@/app/components/Footer';
 import AICounselor from '@/app/components/AICounselor';
@@ -16,6 +16,7 @@ import TiltCard from '@/app/components/TiltCard';
 import SmoothReveal from '@/app/components/SmoothReveal';
 import TextReveal from '@/app/components/TextReveal';
 import { useThemeContext } from '@/app/components/ThemeProvider';
+import { TESTIMONIALS, MINI_TESTIMONIALS } from '@/lib/data';
 
 type Testimonial = {
   id: string; quote: string; name: string; program: string;
@@ -38,12 +39,49 @@ export default function ReviewsPage() {
   const [selectedCountry, setSelectedCountry] = useState('All');
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [miniTestimonials, setMiniTestimonials] = useState<MiniTestimonial[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    fetch('/api/admin/testimonials').then(r => r.json()).then(d => {
-      setTestimonials(d.testimonials ?? []);
-      setMiniTestimonials(d.miniTestimonials ?? []);
-    });
+    const loadTestimonials = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/admin/testimonials');
+        if (!response.ok) throw new Error('Failed to fetch testimonials');
+        const data = await response.json();
+
+        const testimonialsWithIds = (Array.isArray(data.testimonials) ? data.testimonials : TESTIMONIALS).map((t: any, i: number) => ({
+          ...t,
+          id: t.id || `testimonial-${i}`,
+        }));
+        const miniWithIds = (Array.isArray(data.miniTestimonials) ? data.miniTestimonials : MINI_TESTIMONIALS).map((m: any, i: number) => ({
+          ...m,
+          id: m.id || `mini-${i}`,
+        }));
+
+        setTestimonials(testimonialsWithIds);
+        setMiniTestimonials(miniWithIds);
+        setError(false);
+      } catch (err) {
+        console.error('Error loading testimonials:', err);
+        // Fallback to static data with ids
+        const testimonialsWithIds = TESTIMONIALS.map((t, i) => ({
+          ...t,
+          id: `testimonial-${i}`,
+        }));
+        const miniWithIds = MINI_TESTIMONIALS.map((m, i) => ({
+          ...m,
+          id: `mini-${i}`,
+        }));
+        setTestimonials(testimonialsWithIds);
+        setMiniTestimonials(miniWithIds);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadTestimonials();
   }, []);
 
   const filteredTestimonials = selectedCountry === 'All' ? testimonials : testimonials.filter((t) => t.country === selectedCountry);
@@ -151,12 +189,36 @@ export default function ReviewsPage() {
             </div>
           </SmoothReveal>
 
-          {filteredTestimonials.length === 0 ? (
+          {loading && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="p-6 rounded-xl glass-card animate-pulse">
+                  <div className="h-20 bg-brand-dark/10 dark:bg-brand-light/10 rounded mb-4" />
+                  <div className="h-4 bg-brand-dark/10 dark:bg-brand-light/10 rounded mb-2" />
+                  <div className="h-3 bg-brand-dark/10 dark:bg-brand-light/10 rounded w-3/4" />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {error && !loading && (
+            <div className="flex flex-col items-center gap-4 py-16 px-8 text-center bg-yellow-50 dark:bg-yellow-500/10 border border-yellow-200 dark:border-yellow-500/30 rounded-xl">
+              <AlertCircle className="w-12 h-12 text-yellow-600" />
+              <div>
+                <h3 className="font-display font-bold text-brand-dark dark:text-brand-light text-lg mb-1">Connection Issue</h3>
+                <p className="text-brand-dark/60 dark:text-brand-light/60 text-sm">We couldn't load live reviews, but showing you our most recent ones.</p>
+              </div>
+            </div>
+          )}
+
+          {!loading && filteredTestimonials.length === 0 && (
             <div className="text-center py-16 text-brand-dark/30 dark:text-brand-light/30">
               <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-30" />
               <p className="text-sm font-mono">No reviews yet for this destination.</p>
             </div>
-          ) : (
+          )}
+
+          {!loading && filteredTestimonials.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {filteredTestimonials.map((t, i) => (
                 <SmoothReveal key={t.id} delay={i * 0.08}>
@@ -182,7 +244,7 @@ export default function ReviewsPage() {
             </div>
           )}
 
-          {filteredMini.length > 0 && (
+          {!loading && filteredMini.length > 0 && (
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {filteredMini.map((mini, i) => (
                 <SmoothReveal key={mini.id} delay={i * 0.06}>

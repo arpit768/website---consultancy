@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { MapPin, Phone, Mail, Clock, Instagram, Facebook, Linkedin } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Instagram, Facebook, Linkedin, ExternalLink } from 'lucide-react';
 
 const SERVICES_LINKS = [
   { label: 'Education Consultation', href: '/services' },
@@ -25,10 +25,15 @@ const QUICK_LINKS = [
   { label: 'Contact Us', href: '/#contact' },
 ];
 
+const POLICY_LINKS = [
+  { label: 'Privacy Policy', href: '/privacy' },
+  { label: 'Terms & Conditions', href: '/terms' },
+];
+
 const SOCIAL = [
-  { label: 'Instagram', href: '#', icon: Instagram },
-  { label: 'Facebook', href: '#', icon: Facebook },
-  { label: 'LinkedIn', href: '#', icon: Linkedin },
+  { label: 'Instagram', href: 'https://instagram.com/educarinternational', icon: Instagram, external: true },
+  { label: 'Facebook', href: 'https://facebook.com/educarinternational', icon: Facebook, external: true },
+  { label: 'LinkedIn', href: 'https://linkedin.com/company/educar-international', icon: Linkedin, external: true },
 ];
 
 export default function Footer() {
@@ -71,14 +76,19 @@ export default function Footer() {
 
             {/* Social icons */}
             <div className="flex items-center gap-2.5 mt-1">
-              {SOCIAL.map(({ label, href, icon: Icon }) => (
+              {SOCIAL.map(({ label, href, icon: Icon, external }) => (
                 <Link
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="w-9 h-9 rounded-xl bg-brand-purple/6 hover:bg-brand-yellow border border-brand-purple/10 hover:border-brand-yellow flex items-center justify-center text-brand-purple/60 hover:text-brand-dark transition-all duration-200"
+                  target={external ? '_blank' : undefined}
+                  rel={external ? 'noopener noreferrer' : undefined}
+                  className="w-9 h-9 rounded-xl bg-brand-purple/6 hover:bg-brand-yellow border border-brand-purple/10 hover:border-brand-yellow flex items-center justify-center text-brand-purple/60 hover:text-brand-dark transition-all duration-200 relative group"
                 >
                   <Icon className="w-4 h-4" />
+                  {external && (
+                    <ExternalLink className="w-2.5 h-2.5 absolute -top-0.5 -right-0.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  )}
                 </Link>
               ))}
             </div>
@@ -128,8 +138,25 @@ export default function Footer() {
               <span className="w-3 h-0.5 bg-brand-yellow rounded-full" />
               <p className="text-[10px] font-mono uppercase tracking-widest text-brand-purple font-semibold">Company</p>
             </div>
-            <ul className="flex flex-col gap-3">
+            <ul className="flex flex-col gap-3 mb-8">
               {QUICK_LINKS.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="text-brand-dark/55 dark:text-brand-light/45 hover:text-brand-purple dark:hover:text-brand-yellow text-sm transition-colors duration-200"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex items-center gap-2 mb-5">
+              <span className="w-3 h-0.5 bg-brand-yellow rounded-full" />
+              <p className="text-[10px] font-mono uppercase tracking-widest text-brand-purple font-semibold">Legal</p>
+            </div>
+            <ul className="flex flex-col gap-3">
+              {POLICY_LINKS.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.href}

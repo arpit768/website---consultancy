@@ -61,7 +61,7 @@ export default function MobileNav({ isDarkMode, onToggleDark }: MobileNavProps) 
               className="fixed top-0 right-0 h-full w-[min(288px,90vw)] z-[201] bg-brand-light dark:bg-brand-dark border-l border-brand-purple/10 dark:border-brand-yellow/10 flex flex-col shadow-2xl shadow-brand-dark/40"
             >
               <div className="flex items-center justify-between px-6 py-5 border-b border-brand-purple/8 dark:border-brand-yellow/8">
-                <div className="relative h-9 w-32 dark:bg-white dark:rounded-md dark:px-1">
+                <div className="relative h-9 w-32">
                   <Image
                     src="/logo.png"
                     alt="Educar International"
@@ -102,14 +102,6 @@ export default function MobileNav({ isDarkMode, onToggleDark }: MobileNavProps) 
               </nav>
 
               <div className="px-6 pb-8 flex flex-col gap-2">
-                <Link
-                  href="/#contact"
-                  onClick={() => setOpen(false)}
-                  className="w-full border border-brand-purple dark:border-brand-yellow text-brand-purple dark:text-brand-yellow px-5 py-3 rounded-xl text-sm font-semibold hover:bg-brand-purple/5 dark:hover:bg-brand-yellow/5 transition-all duration-200 flex items-center justify-center gap-2"
-                >
-                  Book Now
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
                 <Link
                   href="/#contact"
                   onClick={() => setOpen(false)}

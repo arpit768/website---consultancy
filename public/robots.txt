@@ -1,0 +1,13 @@
+# Educar International - robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /.env
+Disallow: /private
+
+# Sitemaps
+Sitemap: https://www.educarinternational.edu.np/sitemap.xml
+
+# Crawl delay (optional - adjust based on server capacity)
+Crawl-delay: 1
