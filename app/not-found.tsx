@@ -33,7 +33,7 @@ export default function NotFound() {
             </h1>
 
             <p className="text-lg text-brand-dark/55 dark:text-brand-light/55 mb-8 max-w-lg mx-auto leading-relaxed">
-              Sorry! We couldn't find the page you're looking for. It might have been moved or doesn't exist.
+              Sorry! We couldn&apos;t find the page you&apos;re looking for. It might&apos;ve been moved or doesn&apos;t exist.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center">

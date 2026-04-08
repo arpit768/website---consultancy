@@ -171,7 +171,7 @@ export default function Home() {
                             <svc.icon className="w-5 h-5 text-brand-purple dark:text-brand-yellow" />
                           </div>
                           <h3 className="font-display font-bold text-xs sm:text-sm mb-1 leading-snug">{svc.title}</h3>
-                          <p className="text-[11px] text-brand-dark/40 dark:text-brand-light/35 leading-relaxed hidden sm:block">{svc.desc}</p>
+                          <p className="text-[11px] text-brand-dark/60 dark:text-brand-light/50 leading-relaxed hidden sm:block">{svc.desc}</p>
                         </div>
                       </Link>
                     </SmoothReveal>
@@ -376,7 +376,7 @@ export default function Home() {
                 ))}
                 <div className="mt-2 p-5 bg-brand-yellow/[0.04] border border-brand-yellow/10 rounded-xl">
                   <p className="text-brand-yellow font-display font-bold text-sm mb-1">Free Consultation</p>
-                  <p className="text-brand-light/35 text-xs leading-relaxed">
+                  <p className="text-brand-dark/70 text-xs leading-relaxed">
                     Talk directly with a senior counselor — no bots, no scripts.
                   </p>
                 </div>

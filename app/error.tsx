@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import { AlertTriangle, RotateCcw, Home } from 'lucide-react';
 import Link from 'next/link';
@@ -12,11 +12,10 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    setIsDark(document.documentElement.classList.contains('dark'));
-  }, []);
+  const [isDark] = useState(() => {
+    if (typeof document === 'undefined') return false;
+    return document.documentElement.classList.contains('dark');
+  });
 
   return (
     <div className={`min-h-screen flex items-center justify-center px-5 sm:px-8 ${isDark ? 'bg-brand-dark' : 'bg-brand-light'}`}>
@@ -35,7 +34,7 @@ export default function Error({
         </h1>
 
         <p className={`text-sm mb-2 ${isDark ? 'text-brand-light/50' : 'text-brand-dark/50'}`}>
-          We encountered an unexpected error. Don't worry, our team has been notified.
+          We encountered an unexpected error. Don&apos;t worry, our team has been notified.
         </p>
 
         {error.message && (

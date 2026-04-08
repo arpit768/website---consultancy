@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MessageCircle, X, Send, Bot, User, Sparkles } from 'lucide-react';
 
@@ -149,10 +149,13 @@ export default function AICounselor() {
   }, [messages, loading]);
 
   useEffect(() => {
-    if (open) setShowPulse(false);
+    if (!open) return;
+    // Delay state update to next render cycle
+    const timer = setTimeout(() => setShowPulse(false), 0);
+    return () => clearTimeout(timer);
   }, [open]);
 
-  const sendMessage = async (text: string) => {
+  const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || loading) return;
 
     const userMsg: Message = { id: Date.now().toString(), role: 'user', content: text.trim() };
@@ -170,7 +173,7 @@ export default function AICounselor() {
     ]);
     setLoading(false);
     setTimeout(() => inputRef.current?.focus(), 100);
-  };
+  }, [loading]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {

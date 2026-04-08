@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { motion } from 'motion/react';
 
 interface MagneticButtonProps {
@@ -16,11 +16,10 @@ export default function MagneticButton({
 }: MagneticButtonProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-
-  useEffect(() => {
-    setIsTouchDevice(window.matchMedia('(pointer: coarse)').matches);
-  }, []);
+  const [isTouchDevice] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(pointer: coarse)').matches;
+  });
 
   const handleMouse = (e: React.MouseEvent) => {
     if (isTouchDevice || !ref.current) return;

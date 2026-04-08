@@ -3,15 +3,20 @@
 import { useState, useEffect } from 'react';
 
 export function useTheme() {
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window === 'undefined') return false;
     const saved = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const shouldBeDark = saved === 'dark' || (!saved && prefersDark);
-    setIsDark(shouldBeDark);
-    document.documentElement.classList.toggle('dark', shouldBeDark);
-  }, []);
+    if (typeof document !== 'undefined') {
+      document.documentElement.classList.toggle('dark', shouldBeDark);
+    }
+    return shouldBeDark;
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDark);
+  }, [isDark]);
 
   const toggle = () => {
     setIsDark((prev) => {

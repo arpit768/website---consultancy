@@ -48,12 +48,12 @@ export default function Footer() {
           <div className="flex flex-col gap-5 max-w-xs">
             {/* Logo */}
             <Link href="/" className="inline-block">
-              <div className="relative h-12 w-44">
+              <div className="relative h-12 w-44 bg-white rounded-lg p-1">
                 <Image
                   src="/logo.png"
                   alt="Educar International"
                   fill
-                  className="object-contain object-left"
+                  className="object-contain object-center"
                 />
               </div>
             </Link>

@@ -25,13 +25,13 @@ export default function Navbar({ isDarkMode, onToggleDark }: NavbarProps) {
     <nav className="fixed top-3 sm:top-5 left-1/2 -translate-x-1/2 z-50 w-[96%] sm:w-[92%] max-w-6xl">
       <div className="bg-white/75 dark:bg-brand-dark/80 backdrop-blur-xl px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl shadow-lg shadow-brand-purple/5 border border-brand-purple/10 dark:border-brand-yellow/10 flex items-center justify-between transition-colors duration-500">
 
-        <Link href="/" className="flex items-center">
-          <div className="relative h-8 w-28 sm:h-10 sm:w-36">
+        <Link href="/" className="flex items-center flex-shrink-0">
+          <div className="relative h-8 w-28 sm:h-10 sm:w-36 bg-white dark:bg-white rounded-md dark:rounded-lg p-0.5 dark:p-1">
             <Image
               src="/logo.png"
               alt="Educar International"
               fill
-              className="object-contain object-left"
+              className="object-contain object-center"
               priority
             />
           </div>

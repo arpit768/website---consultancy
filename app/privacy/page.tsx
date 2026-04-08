@@ -29,7 +29,7 @@ export default function PrivacyPage() {
               <section>
                 <h2 className="text-2xl font-display font-bold mb-4">1. Introduction</h2>
                 <p className="text-brand-dark/65 dark:text-brand-light/65 leading-relaxed">
-                  Educar International Pvt. Ltd. ("we", "us", "our") operates the website. This page informs you of our policies
+                  Educar International Pvt. Ltd. (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;) operates the website. This page informs you of our policies
                   regarding the collection, use, and disclosure of personal data when you use our service and the choices you have
                   associated with that data.
                 </p>

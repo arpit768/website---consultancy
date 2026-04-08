@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 type ThemeCtx = { isDark: boolean; toggle: () => void };
 
@@ -16,11 +16,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (typeof window === 'undefined') return false;
     return document.documentElement.classList.contains('dark');
   });
-
-  useEffect(() => {
-    // Sync state with what the inline script already set on <html>
-    setIsDark(document.documentElement.classList.contains('dark'));
-  }, []);
 
   const toggle = () => {
     setIsDark((prev) => {

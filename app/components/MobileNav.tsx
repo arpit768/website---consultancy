@@ -61,12 +61,12 @@ export default function MobileNav({ isDarkMode, onToggleDark }: MobileNavProps) 
               className="fixed top-0 right-0 h-full w-[min(288px,90vw)] z-[201] bg-brand-light dark:bg-brand-dark border-l border-brand-purple/10 dark:border-brand-yellow/10 flex flex-col shadow-2xl shadow-brand-dark/40"
             >
               <div className="flex items-center justify-between px-6 py-5 border-b border-brand-purple/8 dark:border-brand-yellow/8">
-                <div className="relative h-9 w-32">
+                <div className="relative h-9 w-32 bg-white rounded-md p-0.5 flex-shrink-0">
                   <Image
                     src="/logo.png"
                     alt="Educar International"
                     fill
-                    className="object-contain object-left"
+                    className="object-contain object-center"
                   />
                 </div>
                 <button

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import { motion } from 'motion/react';
 
 interface TiltCardProps {
@@ -20,11 +20,10 @@ export default function TiltCard({
   const [transform, setTransform] = useState({ rotateX: 0, rotateY: 0 });
   const [glarePos, setGlarePos] = useState({ x: 50, y: 50 });
   const [isHovered, setIsHovered] = useState(false);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
-
-  useEffect(() => {
-    setIsTouchDevice(window.matchMedia('(pointer: coarse)').matches);
-  }, []);
+  const [isTouchDevice] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(pointer: coarse)').matches;
+  });
 
   const handleMouse = (e: React.MouseEvent) => {
     if (isTouchDevice || !ref.current) return;
