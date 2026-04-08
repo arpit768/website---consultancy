@@ -15,7 +15,8 @@ interface NavbarProps {
 export default function Navbar({ isDarkMode, onToggleDark }: NavbarProps) {
   const pathname = usePathname();
 
-  const isActive = (href: string) => {
+  const isActive = (href: string, exact?: boolean) => {
+    if (exact) return pathname === href;
     if (href === '/') return pathname === '/';
     return pathname.startsWith(href);
   };
@@ -43,7 +44,7 @@ export default function Navbar({ isDarkMode, onToggleDark }: NavbarProps) {
               key={link.name}
               href={link.href}
               className={`px-4 py-2 rounded-xl transition-all duration-200 ${
-                isActive(link.href)
+                isActive(link.href, (link as any).exact)
                   ? 'bg-brand-purple/10 dark:bg-brand-yellow/10 text-brand-purple dark:text-brand-yellow font-semibold'
                   : 'text-brand-dark/55 dark:text-brand-light/55 hover:text-brand-purple dark:hover:text-brand-yellow hover:bg-brand-purple/5'
               }`}
@@ -62,6 +63,13 @@ export default function Navbar({ isDarkMode, onToggleDark }: NavbarProps) {
           >
             {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
+          <Link
+            href="/#contact"
+            className="text-brand-purple dark:text-brand-yellow px-4 py-2 rounded-xl text-sm font-medium border border-brand-purple/20 dark:border-brand-yellow/20 hover:bg-brand-purple/5 dark:hover:bg-brand-yellow/5 transition-all duration-200 flex items-center gap-1.5"
+          >
+            Book Now
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
           <Link
             href="/#contact"
             className="bg-brand-purple dark:bg-brand-yellow text-white dark:text-brand-dark px-5 py-2 rounded-xl text-sm font-semibold hover:opacity-90 hover:shadow-lg hover:shadow-brand-purple/25 hover:-translate-y-px transition-all duration-200 flex items-center gap-1.5"

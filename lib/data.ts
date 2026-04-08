@@ -3,6 +3,7 @@ import {
 } from 'lucide-react';
 
 export const NAV_LINKS = [
+  { name: 'Home', href: '/', exact: true },
   { name: 'Destinations', href: '/destinations' },
   { name: 'Services',     href: '/services'     },
   { name: 'Process',      href: '/process'      },

@@ -17,7 +17,8 @@ export default function MobileNav({ isDarkMode, onToggleDark }: MobileNavProps) 
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
-  const isActive = (href: string) => {
+  const isActive = (href: string, exact?: boolean) => {
+    if (exact) return pathname === href;
     if (href === '/') return pathname === '/';
     return pathname.startsWith(href);
   };
@@ -57,7 +58,7 @@ export default function MobileNav({ isDarkMode, onToggleDark }: MobileNavProps) 
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', stiffness: 320, damping: 30 }}
-              className="fixed top-0 right-0 h-full w-72 z-[201] bg-brand-light dark:bg-brand-dark border-l border-brand-purple/10 dark:border-brand-yellow/10 flex flex-col shadow-2xl shadow-brand-dark/40"
+              className="fixed top-0 right-0 h-full w-[min(288px,90vw)] z-[201] bg-brand-light dark:bg-brand-dark border-l border-brand-purple/10 dark:border-brand-yellow/10 flex flex-col shadow-2xl shadow-brand-dark/40"
             >
               <div className="flex items-center justify-between px-6 py-5 border-b border-brand-purple/8 dark:border-brand-yellow/8">
                 <div className="relative h-9 w-32 dark:bg-white dark:rounded-md dark:px-1">
@@ -88,7 +89,7 @@ export default function MobileNav({ isDarkMode, onToggleDark }: MobileNavProps) 
                       href={link.href}
                       onClick={() => setOpen(false)}
                       className={`flex items-center justify-between px-4 py-3.5 rounded-xl font-medium transition-all duration-200 ${
-                        isActive(link.href)
+                        isActive(link.href, (link as any).exact)
                           ? 'bg-brand-purple/10 dark:bg-brand-yellow/10 text-brand-purple dark:text-brand-yellow'
                           : 'text-brand-dark/65 dark:text-brand-light/65 hover:bg-brand-purple/5 dark:hover:bg-brand-yellow/5 hover:text-brand-purple dark:hover:text-brand-yellow'
                       }`}
@@ -100,7 +101,15 @@ export default function MobileNav({ isDarkMode, onToggleDark }: MobileNavProps) 
                 ))}
               </nav>
 
-              <div className="px-6 pb-8">
+              <div className="px-6 pb-8 flex flex-col gap-2">
+                <Link
+                  href="/#contact"
+                  onClick={() => setOpen(false)}
+                  className="w-full border border-brand-purple dark:border-brand-yellow text-brand-purple dark:text-brand-yellow px-5 py-3 rounded-xl text-sm font-semibold hover:bg-brand-purple/5 dark:hover:bg-brand-yellow/5 transition-all duration-200 flex items-center justify-center gap-2"
+                >
+                  Book Now
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
                 <Link
                   href="/#contact"
                   onClick={() => setOpen(false)}
@@ -109,7 +118,7 @@ export default function MobileNav({ isDarkMode, onToggleDark }: MobileNavProps) 
                   Free Consultation
                   <ArrowRight className="w-4 h-4" />
                 </Link>
-                <p className="text-center text-[10px] font-mono text-brand-dark/30 dark:text-brand-light/30 mt-4 uppercase tracking-widest">
+                <p className="text-center text-[10px] font-mono text-brand-dark/30 dark:text-brand-light/30 mt-2 uppercase tracking-widest">
                   Govt. of Nepal Authorized
                 </p>
               </div>

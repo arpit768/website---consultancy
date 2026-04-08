@@ -1,10 +1,11 @@
 'use client';
 
-import { motion, useScroll, useSpring } from 'motion/react';
+import { useState } from 'react';
+import { motion, useScroll, useSpring, AnimatePresence } from 'motion/react';
 import {
   ArrowUpRight, ArrowRight, Phone, Mail, MapPin,
   Star, CheckCircle, GraduationCap, FileCheck, BookOpen,
-  Plane, DollarSign, ClipboardList, MessageCircle,
+  Plane, DollarSign, ClipboardList, MessageCircle, ChevronDown,
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -40,8 +41,10 @@ export default function Home() {
   const { isDark: isDarkMode, toggle: toggleDark } = useThemeContext();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+  const [showAllServices, setShowAllServices] = useState(false);
 
   const featuredTestimonial = TESTIMONIALS[0];
+  const visibleServices = showAllServices ? SERVICES_PREVIEW : SERVICES_PREVIEW.slice(0, 3);
 
   return (
     <div className="min-h-screen bg-brand-light dark:bg-brand-dark text-brand-dark dark:text-brand-light font-sans transition-colors duration-500 overflow-x-hidden">
@@ -149,20 +152,51 @@ export default function Home() {
             </div>
           </SmoothReveal>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-            {SERVICES_PREVIEW.map((svc, i) => (
-              <SmoothReveal key={i} delay={i * 0.05}>
-                <Link href="/services">
-                  <div className="group p-5 rounded-xl border border-brand-dark/5 dark:border-brand-light/5 hover:border-brand-purple/20 dark:hover:border-brand-yellow/20 hover:shadow-md transition-all duration-300 text-center h-full">
-                    <div className="w-11 h-11 rounded-xl bg-brand-purple/8 dark:bg-brand-yellow/8 flex items-center justify-center mx-auto mb-3 group-hover:bg-brand-purple/15 dark:group-hover:bg-brand-yellow/15 transition-colors">
-                      <svc.icon className="w-5 h-5 text-brand-purple dark:text-brand-yellow" />
-                    </div>
-                    <h3 className="font-display font-bold text-xs sm:text-sm mb-1 leading-snug">{svc.title}</h3>
-                    <p className="text-[11px] text-brand-dark/40 dark:text-brand-light/35 leading-relaxed hidden sm:block">{svc.desc}</p>
-                  </div>
-                </Link>
+          <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+              <AnimatePresence mode="popLayout">
+                {visibleServices.map((svc, i) => (
+                  <motion.div
+                    key={svc.title}
+                    layout
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <SmoothReveal delay={i * 0.05}>
+                      <Link href="/services">
+                        <div className="group p-5 rounded-xl border border-brand-dark/5 dark:border-brand-light/5 hover:border-brand-purple/20 dark:hover:border-brand-yellow/20 hover:shadow-md transition-all duration-300 text-center h-full">
+                          <div className="w-11 h-11 rounded-xl bg-brand-purple/8 dark:bg-brand-yellow/8 flex items-center justify-center mx-auto mb-3 group-hover:bg-brand-purple/15 dark:group-hover:bg-brand-yellow/15 transition-colors">
+                            <svc.icon className="w-5 h-5 text-brand-purple dark:text-brand-yellow" />
+                          </div>
+                          <h3 className="font-display font-bold text-xs sm:text-sm mb-1 leading-snug">{svc.title}</h3>
+                          <p className="text-[11px] text-brand-dark/40 dark:text-brand-light/35 leading-relaxed hidden sm:block">{svc.desc}</p>
+                        </div>
+                      </Link>
+                    </SmoothReveal>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+
+            {SERVICES_PREVIEW.length > 3 && (
+              <SmoothReveal delay={0.3}>
+                <motion.button
+                  onClick={() => setShowAllServices(!showAllServices)}
+                  className="flex items-center justify-center gap-2 mx-auto px-5 py-2.5 rounded-lg border border-brand-purple/20 dark:border-brand-yellow/20 text-brand-purple dark:text-brand-yellow hover:bg-brand-purple/5 dark:hover:bg-brand-yellow/5 transition-all text-sm font-medium"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {showAllServices ? 'Show Less' : 'View More Services'}
+                  <ChevronDown
+                    className={`w-4 h-4 transition-transform duration-300 ${
+                      showAllServices ? 'rotate-180' : ''
+                    }`}
+                  />
+                </motion.button>
               </SmoothReveal>
-            ))}
+            )}
           </div>
         </div>
       </section>
